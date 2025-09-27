@@ -1,0 +1,477 @@
+[
+  {
+    "state": "Andhra Pradesh",
+    "district": "Anantapur",
+    "location": {
+      "latitude": 14.6819,
+      "longitude": 77.6006
+    },
+    "structure_type": "Percolation Tanks",
+    "outcome": "success"
+  },
+  {
+    "state": "Andhra Pradesh",
+    "district": "Chittoor",
+    "location": {
+      "latitude": 13.2173,
+      "longitude": 79.1004
+    },
+    "structure_type": "Check dams",
+    "outcome": "success"
+  },
+  {
+    "state": "Arunachal Pradesh",
+    "district": "Papum Pare",
+    "location": {
+      "latitude": 27.1,
+      "longitude": 93.62
+    },
+    "structure_type": "Roof Top Rainwater Harvesting",
+    "outcome": "success"
+  },
+  {
+    "state": "Assam",
+    "district": "Kamrup",
+    "location": {
+      "latitude": 26.18,
+      "longitude": 91.53
+    },
+    "structure_type": "Roof Top Rainwater Harvesting",
+    "outcome": "success"
+  },
+  {
+    "state": "Chandigarh",
+    "district": "Chandigarh",
+    "location": {
+      "latitude": 30.7333,
+      "longitude": 76.7794
+    },
+    "structure_type": "Recharge Trenches",
+    "outcome": "success"
+  },
+  {
+    "state": "Gujarat",
+    "district": "Ahmedabad",
+    "location": {
+      "latitude": 23.0225,
+      "longitude": 72.5714
+    },
+    "structure_type": "Rainwater Harvesting through Roof Top & Pavement catchments",
+    "outcome": "success"
+  },
+  {
+    "state": "Haryana",
+    "district": "Yamunanagar",
+    "location": {
+      "latitude": 30.129,
+      "longitude": 77.2674
+    },
+    "structure_type": "Combination of Recharge shafts and injection wells",
+    "outcome": "success"
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "Una",
+    "location": {
+      "latitude": 31.47,
+      "longitude": 76.27
+    },
+    "structure_type": "Check dams",
+    "outcome": "success"
+  },
+  {
+    "state": "Karnataka",
+    "district": "Kolar",
+    "location": {
+      "latitude": 13.1362,
+      "longitude": 78.1335
+    },
+    "structure_type": "Combination of Percolation Tanks, Watershed Structures, Recharge wells, Roof Top Rainwater Harvesting",
+    "outcome": "success"
+  },
+  {
+    "state": "Kerala",
+    "district": "Kasaragod",
+    "location": {
+      "latitude": 12.4991,
+      "longitude": 74.9877
+    },
+    "structure_type": "Sub-surface Dyke",
+    "outcome": "success"
+  },
+  {
+    "state": "Madhya Pradesh",
+    "district": "Dewas",
+    "location": {
+      "latitude": 22.9676,
+      "longitude": 76.0498
+    },
+    "structure_type": "Sub-surface Dykes",
+    "outcome": "success"
+  },
+  {
+    "state": "Madhya Pradesh",
+    "district": "Jhabua",
+    "location": {
+      "latitude": 22.7725,
+      "longitude": 74.5951
+    },
+    "structure_type": "Percolation Tank",
+    "outcome": "success"
+  },
+  {
+    "state": "Maharashtra",
+    "district": "Jalgaon",
+    "location": {
+      "latitude": 21.0077,
+      "longitude": 75.5626
+    },
+    "structure_type": "Combination of Percolation Tanks and Check Dams",
+    "outcome": "success"
+  },
+  {
+    "state": "NCT Delhi",
+    "district": "New Delhi",
+    "location": {
+      "latitude": 28.6139,
+      "longitude": 77.209
+    },
+    "structure_type": "Check dams",
+    "outcome": "success"
+  },
+  {
+    "state": "Orissa",
+    "district": "Puri",
+    "location": {
+      "latitude": 19.8135,
+      "longitude": 85.8312
+    },
+    "structure_type": "Renovation of creeks & sub-creeks, Construction of Control Sluices and recharge bore wells",
+    "outcome": "success"
+  },
+  {
+    "state": "Punjab",
+    "district": "Ludhiana",
+    "location": {
+      "latitude": 30.901,
+      "longitude": 75.8573
+    },
+    "structure_type": "Combination of vertical shafts, injection wells & recharge trenches",
+    "outcome": "success"
+  },
+  {
+    "state": "Rajasthan",
+    "district": "Jaipur",
+    "location": {
+      "latitude": 26.9124,
+      "longitude": 75.7873
+    },
+    "structure_type": "Check dams",
+    "outcome": "success"
+  },
+  {
+    "state": "Tamil Nadu",
+    "district": "Kancheepuram",
+    "location": {
+      "latitude": 12.8362,
+      "longitude": 79.7037
+    },
+    "structure_type": "Sub-surface Dyke",
+    "outcome": "success"
+  },
+  {
+    "state": "West Bengal",
+    "district": "Medinipur",
+    "location": {
+      "latitude": 22.4282,
+      "longitude": 87.3204
+    },
+    "structure_type": "Combination of Farm Ponds, Nala Bunds, Sub-surface Dykes",
+    "outcome": "success"
+  },
+  {
+    "state": "Maharashtra",
+    "district": "Pune",
+    "location": {
+      "latitude": 18.5204,
+      "longitude": 73.8567
+    },
+    "structure_type": "Percolation Tank",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Economically unviable without heavy government subsidy (Benefit-Cost Ratio of 0.50). Technically sound but financially unsustainable."
+  },
+  {
+    "state": "Rajasthan",
+    "district": "Barmer",
+    "location": {
+      "latitude": 25.757,
+      "longitude": 71.423
+    },
+    "structure_type": "Check Dam",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Insufficient source water due to extremely low and erratic rainfall in an arid zone. The catchment yield was overestimated, and the dam rarely impounded enough water for significant recharge."
+  },
+  {
+    "state": "Maharashtra",
+    "district": "Akola",
+    "location": {
+      "latitude": 20.7002,
+      "longitude": 77.0082
+    },
+    "structure_type": "Percolation Tank",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Incorrect site selection. The tank was constructed over a thick, impermeable layer of black cotton soil (Vertisols), leading to negligible percolation. Most of the stored water was lost to evaporation."
+  },
+  {
+    "state": "West Bengal",
+    "district": "Nadia",
+    "location": {
+      "latitude": 23.4023,
+      "longitude": 88.5273
+    },
+    "structure_type": "Injection Well",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Chemical incompatibility. Oxygenated surface water was injected into an anoxic, iron-rich aquifer, causing rapid precipitation of iron hydroxides, which severely clogged the well screen and surrounding formation."
+  },
+  {
+    "state": "Haryana",
+    "district": "Sirsa",
+    "location": {
+      "latitude": 29.5393,
+      "longitude": 75.0218
+    },
+    "structure_type": "Recharge Trenches",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Induced waterlogging. The project was implemented in a canal command area with an already high water table (<3m). The additional recharge caused the water table to rise further, leading to soil salinization in adjacent fields."
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "Solan",
+    "location": {
+      "latitude": 30.9083,
+      "longitude": 77.0999
+    },
+    "structure_type": "Recharge Shaft",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Severe clogging from high sediment load. The runoff from the highly erodible Shivalik hills carried excessive silt, which quickly clogged the filter mechanism and the shaft itself, rendering it ineffective after one season."
+  },
+  {
+    "state": "Rajasthan",
+    "district": "Pali",
+    "location": {
+      "latitude": 25.772,
+      "longitude": 73.325
+    },
+    "structure_type": "Sub-surface Dyke",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Faulty geological assessment. The dyke was built in a riverbed with deep, permeable sandy alluvium and was not anchored to an impermeable bedrock layer. The stored groundwater simply flowed underneath the dyke."
+  },
+  {
+    "state": "Uttar Pradesh",
+    "district": "Chitrakoot",
+    "location": {
+      "latitude": 25.1764,
+      "longitude": 80.8536
+    },
+    "structure_type": "Gully Plugs",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Lack of maintenance and community participation. A series of earthen gully plugs were washed away during the first heavy monsoon storm due to structural weakness and no post-construction maintenance."
+  },
+  {
+    "state": "Gujarat",
+    "district": "Vapi",
+    "location": {
+      "latitude": 20.3887,
+      "longitude": 72.9095
+    },
+    "structure_type": "Dug well Recharge",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Source water contamination. Rooftop rainwater from a heavily industrial area was channelled into a dug well. The filter system was inadequate to remove fine particulate matter and chemical pollutants, leading to groundwater contamination."
+  },
+  {
+    "state": "Andhra Pradesh",
+    "district": "Anantapur",
+    "location": {
+      "latitude": 14.6819,
+      "longitude": 77.6006
+    },
+    "structure_type": "Percolation Tank",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Insufficient source water in a rain-shadow region. The feasibility report significantly overestimated runoff from the hard rock catchment. High evaporation and low runoff resulted in the tank never filling adequately."
+  },
+  {
+    "state": "Maharashtra",
+    "district": "Gadchiroli",
+    "location": {
+      "latitude": 20.184,
+      "longitude": 80.0019
+    },
+    "structure_type": "Check Dam",
+    "outcome": "failure",
+    "reason_for_failure_synthetic": "Incorrect hydraulic design. The spillway was designed for a 10-year flood event, but an extreme rainfall event caused a much larger flood. The undersized spillway led to the dam being outflanked and structurally breached."
+  },
+  {
+    "state": "Jharkhand",
+    "district": "Ranchi",
+    "location": {
+      "latitude": 23.3441,
+      "longitude": 85.3096
+    },
+    "structure_type": "Recharge Pit",
+    "geology": "hard-rock",
+    "outcome": "failure"
+  },
+  {
+    "state": "Madhya Pradesh",
+    "district": "Betul",
+    "location": {
+      "latitude": 21.9126,
+      "longitude": 77.8966
+    },
+    "structure_type": "Percolation Tank",
+    "geology": "hard-rock",
+    "outcome": "failure"
+  },
+  {
+    "state": "Uttar Pradesh",
+    "district": "Lalitpur",
+    "location": {
+      "latitude": 24.6868,
+      "longitude": 78.4144
+    },
+    "structure_type": "Percolation Tank",
+    "geology": "crystalline",
+    "outcome": "failure"
+  },
+  {
+    "state": "Uttarakhand",
+    "district": "Dehradun",
+    "location": {
+      "latitude": 30.3165,
+      "longitude": 78.0322
+    },
+    "structure_type": "Check Dam",
+    "topography": "steep",
+    "outcome": "failure"
+  },
+  {
+    "state": "Kerala",
+    "district": "Idukki",
+    "location": {
+      "latitude": 9.8452,
+      "longitude": 76.975
+    },
+    "structure_type": "Percolation Tank",
+    "topography": "steep",
+    "outcome": "failure"
+  },
+  {
+    "state": "Rajasthan",
+    "district": "Bikaner",
+    "location": {
+      "latitude": 28.0229,
+      "longitude": 73.3119
+    },
+    "structure_type": "Recharge Pit",
+    "groundwater_depth": "deep",
+    "outcome": "failure"
+  },
+  {
+    "state": "Karnataka",
+    "district": "Bellary",
+    "location": {
+      "latitude": 15.1394,
+      "longitude": 76.9214
+    },
+    "structure_type": "Check Dam",
+    "groundwater_depth": "deep",
+    "outcome": "failure"
+  },
+  {
+    "state": "Uttar Pradesh",
+    "district": "Prayagraj",
+    "location": {
+      "latitude": 25.4358,
+      "longitude": 81.8463
+    },
+    "structure_type": "Sub-surface Dyke",
+    "geology": "deep-alluvium",
+    "outcome": "failure"
+  },
+  {
+    "state": "Bihar",
+    "district": "Samastipur",
+    "location": {
+      "latitude": 25.859,
+      "longitude": 85.7794
+    },
+    "structure_type": "Sub-surface Dyke",
+    "geology": "deep-alluvium",
+    "outcome": "failure"
+  },
+  {
+    "state": "Punjab",
+    "district": "Firozpur",
+    "location": {
+      "latitude": 30.9234,
+      "longitude": 74.6044
+    },
+    "structure_type": "Sub-surface Dyke",
+    "geology": "deep-alluvium",
+    "outcome": "failure"
+  },
+  {
+    "state": "Tamil Nadu",
+    "district": "Cuddalore",
+    "location": {
+      "latitude": 11.7744,
+      "longitude": 79.7692
+    },
+    "structure_type": "Injection Well",
+    "outcome": "failure"
+  },
+  {
+    "state": "Odisha",
+    "district": "Jharsuguda",
+    "location": {
+      "latitude": 21.8569,
+      "longitude": 84.0289
+    },
+    "structure_type": "Recharge Shaft",
+    "outcome": "failure"
+  },
+  {
+    "state": "Mizoram",
+    "district": "Lunglei",
+    "location": {
+      "latitude": 22.8863,
+      "longitude": 92.7381
+    },
+    "structure_type": "Check Dam",
+    "topography": "steep",
+    "outcome": "failure"
+  },
+  {
+    "state": "Karnataka",
+    "district": "Chitradurga",
+    "location": {
+      "latitude": 14.2251,
+      "longitude": 76.3981
+    },
+    "structure_type": "Recharge Pit",
+    "geology": "hard-rock",
+    "outcome": "failure"
+  },
+  {
+    "state": "Gujarat",
+    "district": "Kutch",
+    "location": {
+      "latitude": 23.7337,
+      "longitude": 69.8597
+    },
+    "structure_type": "Percolation Tank",
+    "groundwater_depth": "deep",
+    "outcome": "failure"
+  }
+]
+

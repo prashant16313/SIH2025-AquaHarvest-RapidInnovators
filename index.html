@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>AquaHarvest | Calculate Rooftop Rainwater Harvesting Potential</title>
-    <meta name="description" content="Use AquaHarvest to easily calculate your rooftop's rainwater harvesting potential, estimate project costs, and find the best RWH structure for your home in India.">
-    <meta name="keywords" content="rainwater harvesting, RWH calculator, Jal Shakti, India, water conservation, rooftop harvesting, AquaHarvest">
+    <title>AquaHarvest | Calculate Rooftop Rainwater Harvesting Potential with AI</title>
+    <meta name="description" content="Use AquaHarvest to easily calculate your rooftop's rainwater harvesting potential, estimate project costs, and find the best RWH structure for your home in India, now with AI-powered success prediction.">
+    <meta name="keywords" content="rainwater harvesting, RWH calculator, Jal Shakti, India, water conservation, rooftop harvesting, AquaHarvest, AI model">
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%233b82f6' d='M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z'/><path fill='white' d='M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'/></svg>">
     
@@ -305,52 +305,6 @@
                         }
                     }, { merge: true });
                 },
-                getDataForDistrict(state, district) {
-                    const T = App.state.translations[App.state.currentLang] || {};
-                    App.elements.loaderText.textContent = T['loader-text-analyzing'] || 'Analyzing...';
-                    return new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            const data = App.state.districtData[state]?.[district];
-                            if (data) resolve(data);
-                            else reject(new Error(`Data for ${district}, ${state} not found.`));
-                        }, 800);
-                    });
-                },
-                getRecommendation(data, annualHarvest, openSpace) {
-                    const dimensions = App.logic.calculateDimensions(annualHarvest);
-                    const annualSavings = Math.round((annualHarvest / 1000) * (data.municipalWaterRate || 10));
-                    let rec = {};
-                    const designVolumeLiters = (annualHarvest / 365) * 4; 
-                    const realisticTankCost = designVolumeLiters * 6; 
-                    if ((data.geology === 'alluvial' || data.geology === 'alluvium') && openSpace >= dimensions.pitDimensions.area && data.groundwaterDepth > 5) {
-                        rec = { nameKey: "structure-recharge-pit", descKey: "structure-recharge-pit-desc", cost: dimensions.volume * 4000, icon: 'pit', dimensions: dimensions.pitDimensions };
-                    } else if (data.geology === 'hard-rock' || openSpace < dimensions.pitDimensions.area) {
-                        rec = { nameKey: "structure-storage-tank", descKey: "structure-storage-tank-desc", cost: realisticTankCost, icon: 'tank', dimensions: dimensions.tankDimensions };
-                    } else {
-                        rec = { nameKey: "structure-borewell-recharge", descKey: "structure-borewell-recharge-desc", cost: 50000, icon: 'borewell', dimensions: dimensions.borewellDimensions };
-                    }
-                    rec.annualSavings = annualSavings;
-                    return rec;
-                },
-                getFeasibility(paybackPeriod) {
-                    if (paybackPeriod <= 7) return { ratingKey: 'feasibility-highly', textKey: 'feasibility-highly-text', color: 'green' };
-                    if (paybackPeriod <= 15) return { ratingKey: 'feasibility-moderately', textKey: 'feasibility-moderately-text', color: 'yellow' };
-                    return { ratingKey: 'feasibility-low', textKey: 'feasibility-low-text', color: 'orange' };
-                },
-                calculateDimensions(annualHarvest) {
-                    const T = App.state.translations[App.state.currentLang] || {};
-                    const designVolumeLiters = (annualHarvest / 365) * 4;
-                    const designVolumeCubicMeters = designVolumeLiters / 1000;
-                    const depth = 3;
-                    const area = designVolumeCubicMeters > 0 ? designVolumeCubicMeters / depth : 0;
-                    const side = Math.sqrt(area);
-                    return {
-                        volume: designVolumeCubicMeters,
-                        pitDimensions: { text: `${side.toFixed(1)}m L x ${side.toFixed(1)}m W x ${depth}m D`, area: area.toFixed(2) },
-                        borewellDimensions: { text: T['dimensions-borewell'], area: 1 },
-                        tankDimensions: { text: T['dimensions-tank'] }
-                    };
-                },
                 findClosestDistrict(lat, lon) {
                     let closest = { state: null, district: null, distance: Infinity };
                     const getDistance = (lat1, lon1, lat2, lon2) => {
@@ -492,11 +446,65 @@
                     }
                 },
                 renderResults(results) {
-                     const { inputs, data, annualHarvest, daysCovered, recommendation, feasibility } = results;
+                     const { inputs, data, annualHarvest, daysCovered, recommendation, feasibility, aiSuccessPrediction } = results;
                      const T = App.state.translations[App.state.currentLang] || {};
                      const format = App.helpers.format;
+
+                     // AI Card Translations (can be expanded in translations.json later)
+                    const T_AI = {
+                        en: {
+                            title: "AI Success Prediction",
+                            subtitle: `Based on historical data from similar projects, our AI predicts a <strong>{score}% chance of success</strong> for the recommended structure in your location.`
+                        },
+                        hi: {
+                            title: "एआई सफलता भविष्यवाणी",
+                            subtitle: `समान परियोजनाओं के ऐतिहासिक आंकड़ों के आधार पर, हमारा एआई आपके स्थान पर अनुशंसित संरचना के लिए <strong>{score}% सफलता की संभावना</strong> की भविष्यवाणी करता है।`
+                        },
+                        bn: {
+                            title: "এআই সাফল্যের পূর্বাভাস",
+                            subtitle: "অনুরূপ প্রকল্পগুলি থেকে ঐতিহাসিক তথ্যের ভিত্তিতে, আমাদের এআই আপনার অবস্থানে প্রস্তাবিত কাঠামোর জন্য <strong>{score}% সাফল্যের সম্ভাবনা</strong> পূর্বাভাস দেয়।"
+                        },
+                        mr: {
+                            title: "एआय यश भविष्यवाणी",
+                            subtitle: "तत्सम प्रकल्पांच्या ऐतिहासिक डेटावर आधारित, आमचे एआय तुमच्या ठिकाणी शिफारस केलेल्या संरचनेसाठी <strong>{score}% यशाची शक्यता</strong> वर्तवते."
+                        },
+                        te: {
+                            title: "AI సక్సెస్ ప్రిడిక్షన్",
+                            subtitle: "ఇలాంటి ప్రాజెక్టుల నుండి చారిత్రక డేటా ఆధారంగా, మా AI మీ ప్రాంతంలో సిఫార్సు చేయబడిన నిర్మాణం కోసం <strong>{score}% విజయం సాధించే అవకాశం</strong> ఉందని అంచనా వేస్తుంది."
+                        },
+                        ta: {
+                            title: "AI வெற்றி கணிப்பு",
+                            subtitle: "ஒத்த திட்டங்களின் வரலாற்றுத் தரவுகளின் அடிப்படையில், எங்கள் AI உங்கள் இருப்பிடத்தில் பரிந்துரைக்கப்பட்ட அமைப்புக்கு <strong>{score}% வெற்றி வாய்ப்பை</strong> கணித்துள்ளது."
+                        }
+                    };
+                    const currentT_AI = T_AI[App.state.currentLang] || T_AI.en;
+
+
+                    const aiCardHTML = `
+                        <div class="result-card glassmorphism-card p-6 rounded-2xl">
+                            <h4 class="text-xl font-bold text-cyan-300 mb-4">${currentT_AI.title}</h4>
+                            <div class="flex items-center justify-center space-x-4 sm:space-x-6">
+                                <div class="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
+                                    <svg class="w-full h-full" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+                                        <circle class="text-slate-600" stroke-width="3" stroke="currentColor" fill="transparent" r="15.9155" cx="18" cy="18" />
+                                        <circle class="text-cyan-400 transition-all duration-1000 ease-out"
+                                            stroke-width="3"
+                                            stroke-dasharray="${aiSuccessPrediction || 0}, 100"
+                                            stroke-linecap="round"
+                                            stroke="currentColor"
+                                            fill="transparent"
+                                            r="15.9155" cx="18" cy="18" />
+                                    </svg>
+                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-bold text-white">${aiSuccessPrediction || 0}<span class="text-lg sm:text-xl">%</span></div>
+                                </div>
+                                <p class="text-slate-300 flex-1 text-sm sm:text-base">${format(currentT_AI.subtitle, {score: aiSuccessPrediction || 0})}</p>
+                            </div>
+                        </div>
+                    `;
+                     
                      App.elements.resultsContainer.innerHTML = `
                         <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-${feasibility.color}-400 mb-2">${T['feasibility-title']}</h4><p class="text-2xl font-bold text-white">${T[feasibility.ratingKey]}</p><p class="text-gray-300 mt-1">${T[feasibility.textKey]}</p></div>
+                        ${aiCardHTML}
                         <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-blue-300 mb-2">${T['harvest-title']}</h4><p class="text-4xl font-extrabold text-white">${annualHarvest.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)} ${T['harvest-unit']}</p><p class="text-gray-300 mt-2">${format(T['harvest-subtitle'], {area: inputs.rooftopArea})}</p></div>
                         <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-green-300 mb-2">${T['impact-title']}</h4><p class="text-2xl font-bold text-white">${format(T['impact-text'], {residents: inputs.residents, days: daysCovered})}</p></div>
                         <div class="grid md:grid-cols-2 gap-6">
@@ -504,7 +512,7 @@
                             <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-orange-300 mb-2">${T['dimensions-title']}</h4><p class="text-2xl font-bold text-white">${recommendation.dimensions.text}</p>${recommendation.dimensions.area ? `<p class="text-gray-300 mt-1"><span class="font-semibold">${T['dimensions-area']}</span> ${recommendation.dimensions.area} m²</p>` : ''}</div>
                         </div>
                         <div class="grid md:grid-cols-2 gap-6">
-                            <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-purple-300 mb-2">${T['cost-title']}</h4><p class="text-3xl font-bold text-white">₹ ${Math.round(recommendation.cost).toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)}</p><p class="text-gray-300 mt-2">${format(T['cost-subtitle'], {savings: recommendation.annualSavings.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)})}</p><p class="text-sm text-gray-400 mt-2 italic">${T['cost-disclaimer']}</p></div>
+                            <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-purple-300 mb-2">${T['cost-title']}</h4><p class="text-3xl font-bold text-white">₹ ${recommendation.cost.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)}</p><p class="text-gray-300 mt-2">${format(T['cost-subtitle'], {savings: recommendation.annualSavings.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)})}</p><p class="text-sm text-gray-400 mt-2 italic">${T['cost-disclaimer']}</p></div>
                             <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-teal-300 mb-2">${T['data-title']}</h4><p class="text-lg text-white"><span class="font-semibold">${T['data-rainfall']}</span> ${data.rainfall} mm</p><p class="text-lg text-white mt-1"><span class="font-semibold">${T['data-depth']}</span> ~${data.groundwaterDepth} m</p><p class="text-lg text-white mt-1"><span class="font-semibold">${T['data-aquifer']}</span> ${data.aquifer}</p><p class="text-lg text-white mt-1"><span class="font-semibold">${T['data-runoff']}</span> ${inputs.runoffCoefficient}</p><p class="text-sm text-gray-400 mt-2">${format(T['data-location'], {district: inputs.district, state: inputs.state})}</p></div>
                         </div>
                         <div class="result-card mt-6"><button id="download-pdf-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all transform hover:scale-105 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>Download Report as PDF</button></div>
@@ -531,30 +539,16 @@
                 showPlaceholder() { App.elements.resultsContainer.innerHTML = ''; App.elements.resultsContainer.classList.add('hidden'); App.elements.loader.classList.add('hidden'); App.elements.placeholder.classList.remove('hidden'); },
                 updateStepView() {
                     const currentStep = App.state.currentStep;
-                    // Update content visibility
                     App.elements.steps.forEach(step => step.classList.add('hidden'));
                     document.getElementById(`step-${currentStep}`).classList.remove('hidden');
-
-                    // Update progress bar
                     document.querySelectorAll('#progress-bar .step').forEach(stepEl => {
                         const stepNum = parseInt(stepEl.dataset.step);
-                        if (stepNum < currentStep) {
-                            stepEl.classList.add('completed');
-                            stepEl.classList.remove('active');
-                        } else if (stepNum === currentStep) {
-                            stepEl.classList.add('active');
-                            stepEl.classList.remove('completed');
-                        } else {
-                            stepEl.classList.remove('active', 'completed');
-                        }
+                        stepEl.classList.toggle('completed', stepNum < currentStep);
+                        stepEl.classList.toggle('active', stepNum === currentStep);
                     });
                      document.querySelectorAll('#progress-bar .progress-line').forEach(lineEl => {
                         const lineNum = parseInt(lineEl.dataset.stepLine);
-                        if(lineNum < currentStep) {
-                            lineEl.style.backgroundColor = '#16a34a';
-                        } else {
-                            lineEl.style.backgroundColor = '#475569';
-                        }
+                        lineEl.style.backgroundColor = lineNum < currentStep ? '#16a34a' : '#475569';
                     });
 
                 }
@@ -572,25 +566,48 @@
 
                     App.elements.loader.classList.remove('hidden'); App.elements.loader.classList.add('flex');
                     App.elements.placeholder.classList.add('hidden'); App.elements.resultsContainer.classList.add('hidden');
+                    
                     try {
                         const formData = new FormData(App.elements.form);
                         const inputs = {
-                            state: formData.get('state'), district: formData.get('district'),
-                            rooftopArea: rooftopAreaValue, runoffCoefficient: parseFloat(formData.get('rooftype')),
-                            roofTypeText: App.elements.rooftypeSelect.options[App.elements.rooftypeSelect.selectedIndex].text,
-                            residents: parseInt(formData.get('residents')), openSpace: parseFloat(formData.get('open-space')) || 0
+                            state: formData.get('state'),
+                            district: formData.get('district'),
+                            rooftopArea: rooftopAreaValue,
+                            runoffCoefficient: parseFloat(formData.get('rooftype')),
+                            residents: parseInt(formData.get('residents')),
+                            openSpace: parseFloat(formData.get('open-space')) || 0,
+                            roofTypeText: App.elements.rooftypeSelect.options[App.elements.rooftypeSelect.selectedIndex].text
                         };
-                        const data = await App.logic.getDataForDistrict(inputs.state, inputs.district);
-                        const dailyWaterNeedPerPerson = 135;
-                        const annualHarvest = Math.round(inputs.rooftopArea * (data.rainfall / 1000) * inputs.runoffCoefficient * 1000);
-                        const daysCovered = (inputs.residents > 0) ? Math.round(annualHarvest / (inputs.residents * dailyWaterNeedPerPerson)) : 0;
-                        const recommendation = App.logic.getRecommendation(data, annualHarvest, inputs.openSpace);
-                        const paybackPeriod = recommendation.annualSavings > 0 ? recommendation.cost / recommendation.annualSavings : Infinity;
-                        const feasibility = App.logic.getFeasibility(paybackPeriod);
-                        App.state.lastResults = { inputs, data, annualHarvest, daysCovered, recommendation, feasibility };
-                        App.ui.renderResults(App.state.lastResults); App.ui.showResults();
-                    } catch (error) { console.error("Analysis failed:", error); App.ui.showNotification("Analysis failed. Please try again."); App.ui.showPlaceholder();
-                    } finally { App.elements.loader.classList.add('hidden'); App.elements.loader.classList.remove('flex'); }
+
+                        const response = await fetch('http://127.0.0.1:8000/analyze', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(inputs)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => null);
+                            const detail = errorData ? errorData.detail : response.statusText;
+                            throw new Error(`Backend error: ${response.status} ${detail}`);
+                        }
+
+                        const results = await response.json();
+                        if (results.error) {
+                            throw new Error(results.error);
+                        }
+                        
+                        App.state.lastResults = results;
+                        App.ui.renderResults(results); 
+                        App.ui.showResults();
+
+                    } catch (error) { 
+                        console.error("Analysis failed:", error); 
+                        App.ui.showNotification(`Analysis failed: ${error.message}. Please check the backend server logs.`); 
+                        App.ui.showPlaceholder();
+                    } finally { 
+                        App.elements.loader.classList.add('hidden'); 
+                        App.elements.loader.classList.remove('flex'); 
+                    }
                 },
                 handleClearForm() {
                     App.elements.form.reset();
@@ -688,7 +705,7 @@
                     y = addSection('Detailed Analysis', y);
                     addText('Recommended Structure', col1, y, 11, 'bold'); addText(T[recommendation.nameKey], col2, y, 11, 'normal'); y += 6; doc.text(doc.splitTextToSize(T[recommendation.descKey], page_width - col2 - 15), col2, y); y += 15;
                     addText('Recommended Dimensions', col1, y, 11, 'bold'); addText(recommendation.dimensions.text, col2, y, 11, 'normal'); y += 10;
-                    addText('Cost & Benefit Analysis', col1, y, 11, 'bold'); y += 8; addText('Estimated Project Cost:', col1 + 5, y, 11, 'normal'); addText(`Rs. ${Math.round(recommendation.cost).toLocaleString('en-IN')}`, page_width - 20, y, 11, 'bold', '#374151', 'right'); y += 7; addText('Estimated Annual Savings:', col1 + 5, y, 11, 'normal'); addText(`Rs. ${recommendation.annualSavings.toLocaleString('en-IN')}`, page_width - 20, y, 11, 'bold', '#16a34a', 'right'); y += 12; 
+                    addText('Cost & Benefit Analysis', col1, y, 11, 'bold'); y += 8; addText('Estimated Project Cost:', col1 + 5, y, 11, 'normal'); addText(`Rs. ${recommendation.cost.toLocaleString('en-IN')}`, page_width - 20, y, 11, 'bold', '#374151', 'right'); y += 7; addText('Estimated Annual Savings:', col1 + 5, y, 11, 'normal'); addText(`Rs. ${recommendation.annualSavings.toLocaleString('en-IN')}`, page_width - 20, y, 11, 'bold', '#16a34a', 'right'); y += 12; 
                     y = addSection('Local Data Used', y);
                     addText(T['data-rainfall'], col1, y, 11, 'bold'); addText(`${data.rainfall} mm`, col2, y, 11, 'normal'); y += 7; addText(T['data-depth'], col1, y, 11, 'bold'); addText(`~${data.groundwaterDepth} m`, col2, y, 11, 'normal'); y += 7; addText(T['data-aquifer'], col1, y, 11, 'bold'); addText(data.aquifer, col2, y, 11, 'normal'); y += 7;
                     addText(T['data-runoff'] || 'Runoff Coefficient:', col1, y, 11, 'bold'); addText(`${inputs.runoffCoefficient}`, col2, y, 11, 'normal');
@@ -828,5 +845,4 @@
 
 </body>
 </html>
-
 
