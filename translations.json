@@ -33,7 +33,7 @@
         "structure-large-sump": "Large Underground Sump", "structure-large-sump-desc": "Best for large campuses to store massive amounts of water for non-potable uses like gardening and flushing.",
         "dimensions-title": "(Dimensions) Recommended Dimensions", "dimensions-area": "Surface Area:", "dimensions-borewell": "Uses borewell. Filter pit needed (1x1x1m).", "dimensions-tank": "Dimensions depend on tank model.",
         "cost-title": "(Cost) Cost & Benefit Analysis", "cost-subtitle": "Estimated annual savings of {savings} on water bills.", "cost-disclaimer": "*This is an estimated cost. Prices may differ in your area.",
-        "data-title": "(Data) Local Data Used", "data-rainfall": "Avg. Annual Rainfall:", "data-depth": "Groundwater Depth:", "data-aquifer": "Principal Aquifer:", "data-location": "Data for {district}, {state}.",
+        "data-title": "(Data) Local Data Used", "data-rainfall": "Avg. Annual Rainfall:", "data-depth": "Groundwater Depth:", "data-aquifer": "Principal Aquifer:", "data-runoff": "Runoff Coefficient:", "data-location": "Data for {district}, {state}.",
         "footer-copy": "&copy; 2025 AquaHarvest. Developed by Team Rapid Innovators.", "footer-tagline": "Team: Prashant, Tejashwa, Vishal, Divyanshu, Bhoomi, Aditii"
     },
     "hi": {
@@ -70,7 +70,7 @@
         "structure-large-sump": "बड़ा भूमिगत सम्प", "structure-large-sump-desc": "बड़े परिसरों के लिए बागवानी और फ्लशिंग जैसे गैर-पीने योग्य उपयोगों के लिए भारी मात्रा में पानी संग्रहीत करने के लिए सर्वोत्तम।",
         "dimensions-title": "(Dimensions) अनुशंसित आयाम", "dimensions-area": "सतह क्षेत्रफल:", "dimensions-borewell": "बोरवेल का उपयोग होता है। फ़िल्टर पिट आवश्यक (1x1x1m)।", "dimensions-tank": "आयाम टैंक के मॉडल पर निर्भर करते हैं।",
         "cost-title": "(Cost) लागत और लाभ विश्लेषण", "cost-subtitle": "पानी के बिल पर {savings} की अनुमानित वार्षिक बचत।", "cost-disclaimer": "*यह एक अनुमानित लागत है। आपके क्षेत्र में कीमतें भिन्न हो सकती हैं।",
-        "data-title": "(Data) प्रयुक्त स्थानीय डेटा", "data-rainfall": "औसत वार्षिक वर्षा:", "data-depth": "भूजल गहराई:", "data-aquifer": "प्रमुख जलभृत:", "data-location": "{district}, {state} के लिए डेटा।",
+        "data-title": "(Data) प्रयुक्त स्थानीय डेटा", "data-rainfall": "औसत वार्षिक वर्षा:", "data-depth": "भूजल गहराई:", "data-aquifer": "प्रमुख जलभृत:", "data-runoff": "अपवाह गुणांक:", "data-location": "{district}, {state} के लिए डेटा।",
         "footer-copy": "© २०२५ एक्वाहार्वेस्ट। टीम रैपिड इनोवेटर्स द्वारा विकसित।", "footer-tagline": "टीम सदस्य: प्रशांत, तेजस्वा, विशाल, दिव्यांशु, भूमि, आदिती"
     },
     "bn": {
@@ -104,7 +104,7 @@
         "structure-large-sump": "বড় আন্ডারগ্রাউন্ড সাম্প", "structure-large-sump-desc": "বড় ক্যাম্পাসের জন্য বাগান এবং ফ্লাশিংয়ের মতো অ-পানীয় ব্যবহারের জন্য প্রচুর পরিমাণে জল সংরক্ষণের জন্য সেরা।",
         "dimensions-title": "(Dimensions) প্রস্তাবিত মাত্রা", "dimensions-area": "পৃষ্ঠের এলাকা:", "dimensions-borewell": "বোরওয়েল ব্যবহার করে। ফিল্টার পিট প্রয়োজন (1x1x1m)।", "dimensions-tank": "মাত্রা ট্যাঙ্কের মডেলের উপর নির্ভর করে।",
         "cost-title": "(Cost) খরচ এবং সুবিধা বিশ্লেষণ", "cost-subtitle": "জলের বিলে বার্ষিক আনুমানিক {savings} সাশ্রয়।", "cost-disclaimer": "*এটি একটি আনুমানিক খরচ। আপনার এলাকায় দাম ভিন্ন হতে পারে।",
-        "data-title": "(Data) ব্যবহৃত স্থানীয় ডেটা", "data-rainfall": "গড় বার্ষিক বৃষ্টিপাত:", "data-depth": "ভূগর্ভস্থ জলের গভীরতা:", "data-aquifer": "প্রধান জলস্তর:", "data-location": "{district}, {state} এর জন্য ডেটা।",
+        "data-title": "(Data) ব্যবহৃত স্থানীয় ডেটা", "data-rainfall": "গড় বার্ষিক বৃষ্টিপাত:", "data-depth": "ভূগর্ভস্থ জলের গভীরতা:", "data-aquifer": "প্রধান জলস্তর:", "data-runoff": "রানঅফ সহগ:", "data-location": "{district}, {state} এর জন্য ডেটা।",
         "footer-copy": "© ২০২৫ অ্যাকোয়াহারভেস্ট। দল র‍্যাপিড ইনোভেটর্স দ্বারা বিকশিত।", "footer-tagline": "দলের সদস্য: প্রশান্ত, তেজস্ব, विशाल, দিব্যাংশু, ভূমি, অদিতি"
     },
     "mr": {
@@ -138,7 +138,7 @@
         "structure-large-sump": "मोठा भूमिगत संप", "structure-large-sump-desc": "मोठ्या कॅम्पससाठी बागकाम आणि फ्लशिंगसारख्या गैर-पिण्यायोग्य वापरासाठी मोठ्या प्रमाणात पाणी साठवण्यासाठी सर्वोत्तम।",
         "dimensions-title": "(Dimensions) शिफारस केलेले परिमाण", "dimensions-area": "पृष्ठभागाचे क्षेत्रफळ:", "dimensions-borewell": "बोरवेलचा वापर होतो. फिल्टर पिट आवश्यक (1x1x1m)।", "dimensions-tank": "परिमाण टाकीच्या मॉडेलवर अवलंबून असतात।",
         "cost-title": "(Cost) खर्च आणि लाभ विश्लेषण", "cost-subtitle": "पाण्याच्या बिलावर {savings} ची अंदाजित वार्षिक बचत।", "cost-disclaimer": "*ही एक अंदाजित किंमत आहे. तुमच्या क्षेत्रात किंमती भिन्न असू शकतात।",
-        "data-title": "(Data) वापरलेला स्थानिक डेटा", "data-rainfall": "सरासरी वार्षिक पाऊस:", "data-depth": "भूजल खोली:", "data-aquifer": "मुख्य जलचर:", "data-location": "{district}, {state} साठी डेटा।",
+        "data-title": "(Data) वापरलेला स्थानिक डेटा", "data-rainfall": "सरासरी वार्षिक पाऊस:", "data-depth": "भूजल खोली:", "data-aquifer": "मुख्य जलचर:", "data-runoff": "अपवाह गुणांक:", "data-location": "{district}, {state} साठी डेटा।",
         "footer-copy": "© २०२५ ऍक्वाहार्वेस्ट. टीम रॅपिड इनोव्हेटर्सद्वारे विकसित.", "footer-tagline": "संघ सदस्य: प्रशांत, तेजस्वा, विशाल, दिव्यांशू, भूमी, अदिती"
     },
     "te": {
@@ -172,8 +172,8 @@
         "structure-large-sump": "పెద్ద భూగర్భ సంప్", "structure-large-sump-desc": "పెద్ద క్యాంపస్‌లు తోటపని మరియు ఫ్లషింగ్ వంటి త్రాగని ఉపయోగాల కోసం భారీ మొత్తంలో నీటిని నిల్వ చేయడానికి ఉత్తమమైనది.",
         "dimensions-title": "(Dimensions) సిఫార్సు చేయబడిన కొలతలు", "dimensions-area": "ఉపరితల ప్రాంతం:", "dimensions-borewell": "బోర్‌వెల్ ఉపయోగిస్తుంది. ఫిల్టర్ పిట్ అవసరం (1x1x1m).", "dimensions-tank": "కొలతలు ట్యాంక్ మోడల్‌పై ఆధారపడి ఉంటాయి.",
         "cost-title": "(Cost) ఖర్చు మరియు ప్రయోజన విశ్లేషణ", "cost-subtitle": "నీటి బిల్లుపై సంవత్సరానికి అంచనా వేయబడిన {savings} పొదుపు.", "cost-disclaimer": "*ఇది అంచనా వేయబడిన ఖర్చు. మీ ప్రాంతంలో ధరలు మారవచ్చు.",
-        "data-title": "(Data) ఉపయోగించిన స్థానిక డేటా", "data-rainfall": "సగటు వార్షిక వర్షపాతం:", "data-depth": "భూగర్భ జలాల లోతు:", "data-aquifer": "ప్రధాన జలాశయం:", "data-location": "{district}, {state} కోసం డేటా.",
-        "footer-copy": "© ౨౦౨౫ ఆక్వాహార్వెస్ట్. టీమ్ ర్యాపిడ్ ఇన్నోవేటర్స్ ద్వారా అభివృద్ధి చేయబడింది.", "footer-tagline": "జట్టు సభ్యులు: ప్రశాంత్, తేజశ్వ, విశాల్, దివ్యాంశు, భూమి, అదితి"
+        "data-title": "(Data) ఉపయోగించిన స్థానిక డేటా", "data-rainfall": "సగటు వార్షిక వర్షపాతం:", "data-depth": "భూగర్భ జలాల లోతు:", "data-aquifer": "ప్రధాన జలాశయం:", "data-runoff": "రన్ఆఫ్ గుణకం:", "data-location": "{district}, {state} కోసం డేటా.",
+        "footer-copy": "© ౨౦౨౫ ఆక్వాహార్వెస్ట్. టీమ్ ర్యాपिడ్ ఇన్నోవేటర్స్ ద్వారా అభివృద్ధి చేయబడింది.", "footer-tagline": "జట్టు సభ్యులు: ప్రశాంత్, తేజశ్వ, విశాల్, దివ్యాంశు, భూమి, అదితి"
     },
     "ta": {
         "header-get-started": "தொடங்கவும்", "hero-title": "மழைநீரின் சக்தியைத் திறக்கவும்", "hero-subtitle": "எங்கள் கருவி உங்கள் மழைநீர் சேகரிப்பு திறனை மதிப்பிட உதவுகிறது, ஒரு நிலையான எதிர்காலத்திற்கான சிறந்த தீர்வுகளைப் பரிந்துரைக்கிறது.", "hero-cta": "உங்கள் திறனைக் கணக்கிடுங்கள்",
@@ -193,7 +193,7 @@
         "rooftype-tiled": "ஓடு வேயப்பட்ட கூரை",
         "rooftype-metal": "உலோகத் தகடு",
         "manual-rooftop-area-placeholder": "எ.கா., ௧௫௦", "residents-placeholder": "எ.கா., ௪", "families-placeholder": "எ.கா., ௧௫௦", "open-space-placeholder": "எ.கா., ௫௦",
-        "manual-option-btn": "கைமுறையாக உள்ளிடவும்", "map-option-btn": "வரைபடத்தில் வரையவும்", "map-instruction": "உங்கள் கூரையை வரைய பலகோணக் கருவியைப் பயன்படுத்தவும். பகுதி தானாகவே கணக்கிடப்படும்.", "manual-instruction": "உங்கள் கூரைப் பகுதியை சதுர மீட்டரில் உள்ளிடவும்.",
+        "manual-option-btn": "கைமுறையாக உள்ளிடவும்", "map-option-btn": "வரைபடத்தில் வரையவும்", "map-instruction": "உங்கள் கூரையை வரைய பலகோணக் கருவியைப் பயன்படுத்தவும். பகுதி தானாகவே கணக்கிடப்படும்.", "manual-instruction": "உங்கள் கூரைப் பகுதியை சதுర மீட்டரில் உள்ளிடவும்.",
         "open-space-instruction": "திறந்தவெளி இல்லை என்றால் 0 ஐ உள்ளிடவும்.",
         "form-submit-btn": "பகுப்பாய்வு", "form-clear-btn": "அழிக்கவும்",
         "placeholder-title": "உங்கள் முடிவுகள் இங்கே தோன்றும்", "placeholder-subtitle": "உங்கள் தனிப்பயனாக்கப்பட்ட மழைநீர் சேகரிப்பு பகுப்பாய்வைக் காண படிவத்தை நிரப்பவும்.", "loader-text-analyzing": "உங்கள் உள்ளீடுகள் பகுப்பாய்வு செய்யப்படுகின்றன...",
@@ -206,8 +206,7 @@
         "structure-large-sump": "பெரிய நிலத்தடி సంప్", "structure-large-sump-desc": "பெரிய வளாகங்கள் தோட்டக்கலை மற்றும் சுத்தப்படுத்துதல் போன்ற குடிநீர் அல்லாத பயன்பாட்டிற்காக அதிக அளவு தண்ணீரை சேமிக்க சிறந்தது.",
         "dimensions-title": "(Dimensions) பரிந்துரைக்கப்பட்ட பரிமாணங்கள்", "dimensions-area": "மேற்பரப்பு:", "dimensions-borewell": "ஆழ்துளை கிணறு பயன்படுத்துகிறது. வடிகட்டி குழி தேவை (1x1x1m).", "dimensions-tank": "பரிமாணங்கள் தொட்டியின் மாதிரியைப் பொறுத்தது.",
         "cost-title": "(Cost) செலவு மற்றும் நன்மை பகுப்பாய்வு", "cost-subtitle": "தண்ணீர் கட்டணத்தில் ஆண்டுக்கு மதிப்பிடப்பட்ட {savings} சேமிப்பு.", "cost-disclaimer": "*இது ஒரு மதிப்பிடப்பட்ட செலவு. உங்கள் பகுதியில் விலைகள் வேறுபடலாம்.",
-        "data-title": "(Data) பயன்படுத்தப்பட்ட உள்ளூர் தரவு", "data-rainfall": "சராசரி ஆண்டு மழை:", "data-depth": "நிலத்தடி நீர் ஆழம்:", "data-aquifer": "முதன்மை நீர்த்தேக்கம்:", "data-location": "{district}, {state} க்கான தரவு.",
+        "data-title": "(Data) பயன்படுத்தப்பட்ட உள்ளூர் தரவு", "data-rainfall": "சராசரி ஆண்டு மழை:", "data-depth": "நிலத்தடி நீர் ஆழம்:", "data-aquifer": "முதன்மை நீர்த்தேக்கம்:", "data-runoff": "வழிந்தோடல் குணகம்:", "data-location": "{district}, {state} க்கான தரவு.",
         "footer-copy": "© ௨௦౨௫ அக்வாஹார்வெஸ்ட். குழு ரேபிட் இன்னோவேட்டர்ஸ் மூலம் உருவாக்கப்பட்டது.", "footer-tagline": "குழு உறுப்பினர்கள்: பிரசாந்த், தேஜஷ்வா, விஷால், திவ்யான்ஷு, பூமி, அதிதி"
     }
 }
-
