@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>AquaHarvest | Calculate Rooftop Rainwater Harvesting Potential with AI</title>
-    <meta name="description" content="Use AquaHarvest to easily calculate your rooftop's rainwater harvesting potential, estimate project costs, and find the best RWH structure for your home in India, now with AI-powered success prediction.">
-    <meta name="keywords" content="rainwater harvesting, RWH calculator, Jal Shakti, India, water conservation, rooftop harvesting, AquaHarvest, AI model">
+    <title>AquaHarvest | Ministry of Jal Shakti, Government of India</title>
+    <meta name="description" content="Use the official AquaHarvest portal by the Ministry of Jal Shakti to calculate your rooftop's rainwater harvesting potential, estimate project costs, and find the best RWH structure for your home in India, powered by AI.">
+    <meta name="keywords" content="rainwater harvesting, RWH calculator, Jal Shakti, India, water conservation, rooftop harvesting, AquaHarvest, AI model, Government of India">
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%233b82f6' d='M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z'/><path fill='white' d='M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z'/></svg>">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/120px-Emblem_of_India.svg.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,44 +34,38 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; background-color: #1e293b; background-image: url('https://images.unsplash.com/photo-1557682250-33bd709cbe85?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-attachment: fixed; background-position: center; }
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 41, 59, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.3s; }
-        #map { height: 350px; border-radius: 0.75rem; border: 2px solid #475569; transition: border-color 0.3s; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; background-color: #f1f5f9; }
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.3s; }
+        #map { height: 350px; border-radius: 0.75rem; border: 2px solid #cbd5e1; transition: border-color: 0.3s; }
         
-        /* Modern Leaflet Draw Controls */
-        .leaflet-draw-section .leaflet-draw-toolbar { background: rgba(30, 41, 59, 0.7) !important; backdrop-filter: blur(8px); border-radius: 12px !important; border: 1px solid rgba(71, 85, 105, 0.5) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important; gap: 8px; padding: 8px;}
-        .leaflet-draw-toolbar a, .leaflet-control-fullscreen a, .leaflet-control-custom a { background-color: #ffffff !important; color: #334155 !important; border: 1px solid #cbd5e1 !important; border-radius: 10px !important; box-shadow: 0 2px 5px rgba(0,0,0,0.25); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; width: 38px !important; height: 38px !important; }
-        .leaflet-draw-toolbar a:hover, .leaflet-control-fullscreen a:hover, .leaflet-control-custom a:hover { background: linear-gradient(145deg, #3b82f6, #2563eb) !important; color: white !important; border-color: #60a5fa !important; transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4); }
-        .leaflet-draw-toolbar a.leaflet-enabled { background: linear-gradient(145deg, #16a34a, #15803d) !important; color: white !important; border-color: #4ade80 !important; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4) !important; }
-
+        .leaflet-draw-section .leaflet-draw-toolbar { background: rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(8px); border-radius: 12px !important; border: 1px solid #e2e8f0 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important; gap: 8px; padding: 8px;}
+        .leaflet-draw-toolbar a, .leaflet-control-fullscreen a, .leaflet-control-custom a { background-color: #ffffff !important; color: #475569 !important; border: 1px solid #cbd5e1 !important; border-radius: 10px !important; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important; width: 38px !important; height: 38px !important; }
+        .leaflet-draw-toolbar a:hover, .leaflet-control-fullscreen a:hover, .leaflet-control-custom a:hover { background: #2563eb !important; color: white !important; border-color: #60a5fa !important; transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3); }
+        .leaflet-draw-toolbar a.leaflet-enabled { background: #15803d !important; color: white !important; border-color: #4ade80 !important; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3) !important; }
         .leaflet-control-custom a { width: 36px !important; height: 36px !important; display: flex; align-items: center; justify-content: center; }
-        .leaflet-control-layers { background: #334155 !important; color: white !important; border: 1px solid #475569 !important; border-radius: 8px; }
         .leaflet-div-icon { background: rgba(59, 130, 246, 0.7) !important; border: 2px solid white !important; border-radius: 50% !important; box-shadow: 0 0 10px rgba(59, 130, 246, 0.7); width: 10px !important; height: 10px !important; }
-        .leaflet-draw-tooltip { 
-            bottom: auto !important; 
-            top: 20px !important; 
-            left: 50% !important; 
-            transform: translateX(-50%) !important; 
-            border-radius: 6px !important; 
-            background-color: rgba(30, 41, 59, 0.9) !important; 
-            border: 1px solid #475569 !important; 
-            color: white !important; 
-        }
+        .leaflet-draw-tooltip { border-radius: 6px !important; background-color: rgba(30, 41, 59, 0.9) !important; border: 1px solid #475569 !important; color: white !important; }
         .leaflet-tooltip-permanent { background-color: rgba(0, 0, 0, 0.6) !important; border: 1px solid #3b82f6 !important; color: white !important; font-weight: bold; border-radius: 4px; padding: 4px 8px !important; }
-        .hero-bg { background: linear-gradient(rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.8)), url('https://images.unsplash.com/photo-1620352121325-1e6790a5e88e?q=80&w=1920&auto=format&fit=crop') no-repeat center center; background-size: cover; }
-        .glassmorphism-card { background: rgba(51, 65, 85, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(71, 85, 105, 0.5); }
+        .hero-bg { background: linear-gradient(to right, rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1620352121325-1e6790a5e88e?q=80&w=1920&auto=format&fit=crop') no-repeat center center; background-size: cover; }
         .result-card { opacity: 0; transform: translateY(20px); animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-        .loader, .btn-loader { border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 4px solid #3b82f6; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        .btn-loader { width: 20px; height: 20px; border-width: 2px; }
-        #lang-dropdown-menu a.active { background-color: #3b82f6; color: white; }
-        .area-option-btn.active { background-color: #3b82f6; color: white; }
-        select:disabled { background-color: #475569; cursor: not-allowed; }
+        .loader { border: 4px solid rgba(0, 0, 0, 0.1); border-radius: 50%; border-top: 4px solid #f97316; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        #lang-dropdown-menu a.active { background-color: #2563eb; color: white; }
+        .area-option-btn.active { background-color: #2563eb; color: white; }
+        select:disabled { background-color: #e2e8f0; cursor: not-allowed; }
         button:disabled { cursor: not-allowed; opacity: 0.7; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         #main-header { z-index: 1001; }
+        .step { text-align: center; }
+        .step-icon { width: 32px; height: 32px; background-color: #e2e8f0; border: 2px solid #cbd5e1; color: #64748b; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-weight: bold; transition: all 0.3s ease; }
+        .step-text { font-size: 12px; color: #64748b; transition: all 0.3s ease; }
+        .step.active .step-icon { background-color: #eff6ff; border-color: #60a5fa; color: #2563eb; }
+        .step.active .step-text { color: #1e3a8a; font-weight: 600; }
+        .step.completed .step-icon { background-color: #dcfce7; border-color: #4ade80; color: #166534; }
+        .progress-line { transition: background-color 0.3s ease; }
+        .step-content { animation: fadeIn 0.5s; }
 
-        /* MODIFIED AND NEW STYLES FOR LEAFLET DRAW CONTROLS */
+        /* NEW STYLES FOR LEAFLET DRAW CONTROLS */
         .leaflet-draw-draw-polygon { 
             background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23334155" stroke-width="2"%3e%3cpath d="M3.3 8.2 9.7 3 18 5l3 10-8 4-8-3-1.7-8.8Z"/%3e%3c/svg%3e') !important;
             background-repeat: no-repeat !important; background-position: center !important; background-size: 20px 20px !important; 
@@ -79,7 +73,6 @@
         .leaflet-draw-draw-polygon:hover { 
             background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"%3e%3cpath d="M3.3 8.2 9.7 3 18 5l3 10-8 4-8-3-1.7-8.8Z"/%3e%3c/svg%3e') !important; 
         }
-
         .leaflet-draw-edit-edit { 
             background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpath d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"%3e%3c/path%3e%3cpath d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"%3e%3c/path%3e%3c/svg%3e') !important; 
             background-repeat: no-repeat !important; background-position: center !important; background-size: 20px 20px !important;
@@ -87,7 +80,6 @@
         .leaflet-draw-edit-edit:hover { 
              background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpath d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"%3e%3c/path%3e%3cpath d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"%3e%3c/path%3e%3c/svg%3e') !important; 
         }
-
         .leaflet-draw-edit-remove { 
             background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23334155" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpath d="M3 6h18"%3e%3c/path%3e%3cpath d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"%3e%3c/path%3e%3cline x1="10" y1="11" x2="10" y2="17"%3e%3c/line%3e%3cline x1="14" y1="11" x2="14" y2="17"%3e%3c/line%3e%3c/svg%3e') !important; 
             background-repeat: no-repeat !important; background-position: center !important; background-size: 20px 20px !important;
@@ -95,51 +87,47 @@
         .leaflet-draw-edit-remove:hover { 
             background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpath d="M3 6h18"%3e%3c/path%3e%3cpath d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"%3e%3c/path%3e%3cline x1="10" y1="11" x2="10" y2="17"%3e%3c/line%3e%3cline x1="14" y1="11" x2="14" y2="17"%3e%3c/line%3e%3c/svg%3e') !important; 
         }
-        /* END OF MODIFIED STYLES */
-
-
-        /* Step Progress Bar */
-        .step { text-align: center; }
-        .step-icon { width: 32px; height: 32px; background-color: #475569; border: 2px solid #64748b; color: #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; font-weight: bold; transition: all 0.3s ease; }
-        .step-text { font-size: 12px; color: #94a3b8; transition: all 0.3s ease; }
-        .step.active .step-icon { background-color: #3b82f6; border-color: #60a5fa; color: white; }
-        .step.active .step-text { color: #e2e8f0; font-weight: 600; }
-        .step.completed .step-icon { background-color: #16a34a; border-color: #4ade80; color: white; }
-        .progress-line { transition: background-color 0.3s ease; }
-        .step-content { animation: fadeIn 0.5s; }
-
     </style>
 </head>
-<body class="bg-slate-800 text-slate-200">
+<body class="bg-slate-100 text-slate-800">
 
     <div id="notification" class="hidden fixed top-5 right-5 bg-red-600 text-white py-3 px-5 rounded-lg shadow-lg z-[2000] transition-transform transform translate-x-full">
         <p id="notification-message"></p>
     </div>
 
-    <div id="loading-overlay" class="flex"> <div class="loader"></div> <p class="text-white mt-4 text-lg">Loading Application...</p> </div>
+    <div id="loading-overlay" class="flex"> <div class="loader"></div> <p class="text-slate-600 mt-4 text-lg">Loading Application...</p> </div>
 
-    <header id="main-header" class="py-4 px-4 md:px-8 bg-slate-900/80 backdrop-blur-sm sticky top-0 border-b border-slate-700">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z"></path><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>
-                <h1 id="header-title" class="text-2xl font-bold text-white">AquaHarvest</h1>
+    <header id="main-header" class="bg-white sticky top-0 border-b border-slate-200">
+        <div class="bg-blue-800 text-white text-sm py-1">
+             <div class="container mx-auto px-4 flex justify-between items-center">
+                <span id="govt-name-text">Government of India</span>
+                <span id="ministry-name-text" class="hidden md:block">Ministry of Jal Shakti</span>
+             </div>
+        </div>
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/120px-Emblem_of_India.svg.png" alt="Emblem of India" class="h-12">
+                 <div>
+                    <h1 id="header-title" class="text-xl font-bold text-blue-800">AquaHarvest</h1>
+                    <p id="header-subtitle" class="text-xs text-slate-500 font-medium">Central Ground Water Board (CGWB)</p>
+                 </div>
             </div>
             <div class="flex items-center space-x-4">
-                <div id="user-controls" class="flex items-center space-x-4">
-                    <div class="relative">
-                        <button id="lang-dropdown-btn" class="flex items-center space-x-2 bg-slate-700 p-2 rounded-lg font-semibold hover:bg-slate-600 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286H4.545zm1.634-.736L5.5 3.956h-.049l-.679 2.022H6.18z"/><path d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2V2zm4 0a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/></svg>
-                            <span id="selected-lang-text" class="text-sm">EN</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
-                        </button>
-                        <div id="lang-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-slate-600 rounded-lg shadow-xl z-50">
-                            <a href="#" class="block px-4 py-2 text-white hover:bg-slate-500 rounded-t-lg" data-lang="en">English (EN)</a>
-                            <a href="#" class="block px-4 py-2 text-white hover:bg-slate-500" data-lang="hi">हिंदी (HI)</a>
-                            <a href="#" class="block px-4 py-2 text-white hover:bg-slate-500" data-lang="bn">বাংলা (BN)</a>
-                            <a href="#" class="block px-4 py-2 text-white hover:bg-slate-500" data-lang="mr">मराठी (MR)</a>
-                            <a href="#" class="block px-4 py-2 text-white hover:bg-slate-500" data-lang="te">తెలుగు (TE)</a>
-                            <a href="#" class="block px-4 py-2 text-white hover:bg-slate-500 rounded-b-lg" data-lang="ta">தமிழ் (TA)</a>
-                        </div>
+                <div class="relative">
+                    <button id="lang-dropdown-btn" class="flex items-center space-x-2 bg-slate-100 px-3 py-2 rounded-lg font-semibold hover:bg-slate-200 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <span id="lang-btn-text" class="text-sm font-medium text-slate-700">Language</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down text-slate-500 opacity-75" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708 .708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                    <div id="lang-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-xl z-50">
+                        <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-t-lg" data-lang="en">English (EN)</a>
+                        <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100" data-lang="hi">हिंदी (HI)</a>
+                        <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100" data-lang="bn">বাংলা (BN)</a>
+                        <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100" data-lang="mr">मराठी (MR)</a>
+                        <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100" data-lang="te">తెలుగు (TE)</a>
+                        <a href="#" class="block px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-b-lg" data-lang="ta">தமிழ் (TA)</a>
                     </div>
                 </div>
             </div>
@@ -147,11 +135,11 @@
     </header>
     
     <section id="hero-section" class="hero-bg">
-        <div class="container mx-auto px-4 py-24 md:py-32 text-center text-white">
-            <h2 id="hero-title" class="text-4xl md:text-6xl font-extrabold leading-tight mb-4"></h2>
-            <p id="hero-subtitle" class="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-slate-300"></p>
+        <div class="container mx-auto px-4 py-20 md:py-24 text-center text-slate-800">
+            <h2 id="hero-title" class="text-3xl md:text-5xl font-extrabold leading-tight mb-4 text-blue-900"></h2>
+            <p id="hero-subtitle" class="text-md md:text-lg max-w-3xl mx-auto mb-8 text-slate-600"></p>
             <div class="flex items-center justify-center gap-4">
-                <a href="#calculator" id="hero-cta" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 w-full md:w-auto"></a>
+                <a href="#calculator" id="hero-cta" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105 shadow-lg shadow-orange-500/30"></a>
             </div>
         </div>
     </section>
@@ -159,104 +147,94 @@
     <main id="main-content" class="container mx-auto px-4 py-16">
         <section id="calculator-section">
             <div id="calculator" class="grid lg:grid-cols-12 gap-8 lg:gap-12 lg:items-start">
-                <div class="lg:col-span-5 bg-slate-700 p-8 rounded-2xl shadow-lg border border-slate-600 self-start">
-                    <h3 id="form-title" class="text-3xl font-bold mb-2 text-blue-400"></h3>
-                    <p id="form-subtitle" class="text-slate-400 mb-6"></p>
+                <div class="lg:col-span-5 bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200 self-start">
+                    <h3 id="form-title" class="text-2xl font-bold mb-1 text-blue-800"></h3>
+                    <p id="form-subtitle" class="text-slate-500 mb-6"></p>
                     
-                    <!-- Step Progress Bar -->
                     <div id="progress-bar" class="flex justify-between items-start mb-8 text-center w-full">
-                        <div class="step active flex-1" data-step="1">
-                            <div class="step-icon">1</div>
-                            <p id="step-1-text" class="step-text"></p>
-                        </div>
-                        <div class="flex-grow h-1 bg-slate-600 rounded-full mx-2 mt-4 progress-line" data-step-line="1"></div>
-                        <div class="step flex-1" data-step="2">
-                            <div class="step-icon">2</div>
-                            <p id="step-2-text" class="step-text"></p>
-                        </div>
-                        <div class="flex-grow h-1 bg-slate-600 rounded-full mx-2 mt-4 progress-line" data-step-line="2"></div>
-                        <div class="step flex-1" data-step="3">
-                            <div class="step-icon">3</div>
-                            <p id="step-3-text" class="step-text"></p>
-                        </div>
+                        <div class="step active flex-1" data-step="1"><div class="step-icon">1</div><p id="step-1-text" class="step-text"></p></div>
+                        <div class="flex-grow h-1 bg-slate-200 rounded-full mx-2 mt-4 progress-line" data-step-line="1"></div>
+                        <div class="step flex-1" data-step="2"><div class="step-icon">2</div><p id="step-2-text" class="step-text"></p></div>
+                        <div class="flex-grow h-1 bg-slate-200 rounded-full mx-2 mt-4 progress-line" data-step-line="2"></div>
+                        <div class="step flex-1" data-step="3"><div class="step-icon">3</div><p id="step-3-text" class="step-text"></p></div>
                     </div>
 
                     <form id="harvest-form">
-                        <!-- Step 1: Location -->
                         <div id="step-1" class="step-content space-y-4">
-                             <button type="button" id="detect-location-btn" class="w-full flex items-center justify-center space-x-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg px-3 py-2.5" title="Detect My Location">
+                             <button type="button" id="detect-location-btn" class="w-full flex items-center justify-center space-x-2 text-sm font-semibold text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors rounded-lg px-3 py-2.5" title="Detect My Location">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                <span id="auto-location-text">Auto-select Location</span>
+                                <span id="auto-location-text"></span>
                             </button>
-                             <div class="relative flex items-center">
-                                 <div class="flex-grow border-t border-slate-600"></div>
-                                 <span class="flex-shrink mx-4 text-xs text-slate-400">OR</span>
-                                 <div class="flex-grow border-t border-slate-600"></div>
-                             </div>
+                             <div class="relative flex items-center"><div class="flex-grow border-t border-slate-200"></div><span class="flex-shrink mx-4 text-xs text-slate-400 font-medium">OR</span><div class="flex-grow border-t border-slate-200"></div></div>
                             <div>
-                                <div class="flex justify-between items-center mb-2">
-                                    <label for="state-select" id="label-state" class="block text-sm font-medium text-slate-300"></label>
-                                </div>
-                                <select id="state-select" name="state" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required></select>
+                                <label for="state-select" id="label-state" class="block text-sm font-medium text-slate-700 mb-1"></label>
+                                <select id="state-select" name="state" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required></select>
                             </div>
                             <div>
-                                <label for="district-select" id="label-district" class="block text-sm font-medium text-slate-300 mb-2"></label>
-                                <select id="district-select" name="district" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required disabled></select>
+                                <label for="district-select" id="label-district" class="block text-sm font-medium text-slate-700 mb-1"></label>
+                                <select id="district-select" name="district" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required disabled></select>
                             </div>
-                             <p id="location-note" class="text-xs text-slate-400 text-center"></p>
-
-                             <div class="flex justify-end pt-4">
-                                <button type="button" id="next-btn-1" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-transform transform hover:scale-105">Next &rarr;</button>
-                            </div>
+                             <p id="location-note" class="text-xs text-slate-500 text-center"></p>
+                             <div class="flex justify-end pt-4"><button type="button" id="next-btn-1" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">Next &rarr;</button></div>
                         </div>
 
-                        <!-- Step 2: Rooftop Area -->
                         <div id="step-2" class="step-content space-y-6 hidden">
-                             <div><label id="label-area-method" class="block text-sm font-medium text-slate-300 mb-2"></label><div class="flex rounded-lg bg-slate-800 border border-slate-600 p-1"><button type="button" id="manual-option-btn" class="area-option-btn w-1/2 p-2 rounded-md text-sm font-semibold transition active"></button><button type="button" id="map-option-btn" class="area-option-btn w-1/2 p-2 rounded-md text-sm font-semibold transition"></button></div></div>
-                            <div id="area-input-section"><div id="map-container" class="hidden"><div id="map"></div><p id="map-instruction" class="text-xs text-slate-400 mt-2"></p></div><div id="manual-area-container"><input type="number" id="manual-rooftop-area" min="0" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"><p id="manual-instruction" class="text-xs text-slate-400 mt-2"></p></div><input type="hidden" id="rooftop-area" name="rooftop-area" required></div>
+                             <div><label id="label-area-method" class="block text-sm font-medium text-slate-700 mb-2"></label><div class="flex rounded-lg bg-slate-100 border border-slate-300 p-1"><button type="button" id="manual-option-btn" class="area-option-btn w-1/2 p-2 rounded-md text-sm font-semibold text-slate-600 transition active"></button><button type="button" id="map-option-btn" class="area-option-btn w-1/2 p-2 rounded-md text-sm font-semibold text-slate-600 transition"></button></div></div>
+                            <div id="area-input-section"><div id="map-container" class="hidden"><div id="map"></div><p id="map-instruction" class="text-xs text-slate-500 mt-2"></p></div><div id="manual-area-container"><input type="number" id="manual-rooftop-area" min="0" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"><p id="manual-instruction" class="text-xs text-slate-500 mt-2"></p></div><input type="hidden" id="rooftop-area" name="rooftop-area" required></div>
                              <div class="flex justify-between pt-4">
-                                <button type="button" id="prev-btn-2" class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-6 rounded-lg transition-transform transform hover:scale-105">&larr; Previous</button>
-                                <button type="button" id="next-btn-2" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-transform transform hover:scale-105">Next &rarr;</button>
+                                <button type="button" id="prev-btn-2" class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-6 rounded-lg transition">&larr; Previous</button>
+                                <button type="button" id="next-btn-2" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition">Next &rarr;</button>
                             </div>
                         </div>
 
-                        <!-- Step 3: Household Details -->
                         <div id="step-3" class="step-content space-y-6 hidden">
-                             <div><label for="rooftype-select" id="label-rooftype" class="block text-sm font-medium text-slate-300 mb-2"></label>
-                                <select id="rooftype-select" name="rooftype" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                                    <option id="rooftype-concrete" value="0.70" selected></option> <!-- UPDATED as per CGWB Manual Table 7.2 -->
-                                    <option id="rooftype-tiled" value="0.75"></option> <!-- UPDATED as per CGWB Manual Table 7.2 -->
-                                    <option id="rooftype-metal" value="0.90"></option> <!-- UPDATED as per CGWB Manual Table 7.2 -->
+                             <div><label for="rooftype-select" id="label-rooftype" class="block text-sm font-medium text-slate-700 mb-1"></label>
+                                <select id="rooftype-select" name="rooftype" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                                    <option id="rooftype-concrete" value="0.70" selected></option>
+                                    <option id="rooftype-tiled" value="0.75"></option>
+                                    <option id="rooftype-metal" value="0.90"></option>
                                 </select>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
-                                <div><label for="residents" id="label-residents" class="block text-sm font-medium text-slate-300 mb-2"></label><input type="number" id="residents" name="residents" min="1" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required></div>
-                                <div><label for="open-space" id="label-openspace" class="block text-sm font-medium text-slate-300 mb-2"></label><input type="number" id="open-space" name="open-space" min="0" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required></div>
+                                <div><label for="residents" id="label-residents" class="block text-sm font-medium text-slate-700 mb-1"></label><input type="number" id="residents" name="residents" min="1" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required></div>
+                                <div><label for="open-space" id="label-openspace" class="block text-sm font-medium text-slate-700 mb-1"></label><input type="number" id="open-space" name="open-space" min="0" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required></div>
                             </div>
-                            <p id="open-space-instruction" class="text-xs text-slate-400 -mt-4"></p>
-                            <div class="flex justify-between pt-4">
-                                <button type="button" id="prev-btn-3" class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-6 rounded-lg transition-transform transform hover:scale-105">&larr; Previous</button>
+                            <p id="open-space-instruction" class="text-xs text-slate-500 -mt-4"></p>
+                            <div class="flex justify-between items-center pt-4">
+                                <button type="button" id="prev-btn-3" class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-6 rounded-lg transition">&larr; Previous</button>
                                 <div class="flex space-x-4">
-                                    <button type="button" id="form-clear-btn" class="w-full bg-slate-500 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg text-lg flex items-center justify-center"><span></span></button>
-                                    <button type="submit" id="form-submit-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg text-lg flex items-center justify-center shadow-lg shadow-green-600/20"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span></span></button>
+                                    <button type="button" id="form-clear-btn" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 px-6 rounded-lg flex items-center justify-center"></button>
+                                    <button type="submit" id="form-submit-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center shadow-lg shadow-green-600/20"></button>
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div id="output-section" class="lg:col-span-7">
-                    <div id="placeholder" class="flex flex-col items-center justify-center h-full bg-slate-900/50 p-8 rounded-2xl border-2 border-dashed border-slate-600"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-500 mb-4"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg><h3 id="placeholder-title" class="text-2xl font-semibold text-slate-300"></h3><p id="placeholder-subtitle" class="text-slate-400 mt-2 text-center"></p></div>
-                    <div id="loader" class="hidden items-center justify-center h-full"><div class="loader"></div><p id="loader-text" class="ml-4 text-lg"></p></div>
+                    <div id="placeholder" class="flex flex-col items-center justify-center h-full bg-white p-8 rounded-2xl border-2 border-dashed border-slate-300"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400 mb-4"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg><h3 id="placeholder-title" class="text-2xl font-semibold text-slate-600"></h3><p id="placeholder-subtitle" class="text-slate-500 mt-2 text-center"></p></div>
+                    <div id="loader" class="hidden items-center justify-center h-full"><div class="loader"></div><p id="loader-text" class="ml-4 text-lg text-slate-600"></p></div>
                     <div id="results" class="hidden space-y-6"></div>
                 </div>
             </div>
         </section>
     </main>
     
-    <footer class="bg-slate-900 mt-16 border-t border-slate-700">
-        <div class="container mx-auto px-4 py-8 text-center text-slate-400">
-            <p id="footer-copy"></p>
-            <p id="footer-tagline" class="mt-1 text-sm"></p>
+    <footer class="bg-blue-900 mt-16 text-white">
+        <div class="container mx-auto px-4 pt-12 pb-8">
+            <div class="grid md:grid-cols-2 gap-8 text-center md:text-left">
+                <div>
+                    <h4 id="footer-about-title" class="font-bold text-lg mb-3"></h4>
+                    <p id="footer-about-text" class="text-sm text-blue-200"></p>
+                </div>
+                <div>
+                    <h4 id="footer-contact-title" class="font-bold text-lg mb-3"></h4>
+                    <p class="text-sm text-blue-200">Ministry of Jal Shakti, Shram Shakti Bhavan, Rafi Marg, New Delhi - 110001</p>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-6 text-center text-sm text-blue-300">
+                <p id="footer-copy"></p>
+                <p id="footer-credits" class="mt-1 opacity-70"></p>
+            </div>
         </div>
     </footer>
 
@@ -272,8 +250,6 @@
             messagingSenderId: "548981197900",
             appId: "1:548981197900:web:1fe433c2f42becd69cf8e9"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -281,7 +257,6 @@
         // ===================================================================================
         // AquaHarvest Application
         // ===================================================================================
-
         const App = {
             state: { currentLang: 'en', currentStep: 1, areaInputMethod: 'manual', districtData: {}, translations: {}, map: null, drawnItems: null, locationIndicator: null, lastResults: null },
             elements: {},
@@ -293,16 +268,9 @@
             },
             logic: {
                 saveUserLocation(userId, lat, lon) {
-                    if (!userId) {
-                        console.error("DEBUG: User not identified. Cannot save location.");
-                        return Promise.reject("User not identified.");
-                    }
+                    if (!userId) return Promise.reject("User not identified.");
                     return db.collection('user_locations').doc(userId).set({
-                        lastLocation: {
-                            latitude: lat,
-                            longitude: lon,
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                        }
+                        lastLocation: { latitude: lat, longitude: lon, timestamp: firebase.firestore.FieldValue.serverTimestamp() }
                     }, { merge: true });
                 },
                 findClosestDistrict(lat, lon) {
@@ -323,32 +291,37 @@
                 }
             },
             ui: {
-                showNotification(message, isError = true, element) {
-                    if(element) {
-                        element.classList.add('border-red-500');
-                        setTimeout(() => element.classList.remove('border-red-500'), 3000);
-                    }
+                 showNotification(message, isError = true) {
                     const notification = App.elements.notification;
                     const messageEl = App.elements.notificationMessage;
-
                     messageEl.textContent = message;
                     notification.classList.remove('bg-red-600', 'bg-green-600');
                     notification.classList.add(isError ? 'bg-red-600' : 'bg-green-600');
-                    
                     notification.classList.remove('hidden', 'translate-x-full');
-                    
-                    setTimeout(() => {
-                        notification.classList.add('translate-x-full');
-                        setTimeout(() => notification.classList.add('hidden'), 300);
-                    }, 5000);
+                    setTimeout(() => { notification.classList.add('translate-x-full'); setTimeout(() => notification.classList.add('hidden'), 300); }, 5000);
                 },
                 initializeMap() {
                     if (App.state.map) return;
                     const indiaBounds = L.latLngBounds(L.latLng(5, 68), L.latLng(37, 98));
                     App.state.map = L.map('map', { center: [22.5, 82.5], zoom: 5, fullscreenControl: true, fullscreenControlOptions: { position: 'topleft' }, maxBounds: indiaBounds, minZoom: 5 });
-                    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri', maxZoom: 19 });
-                    satelliteLayer.addTo(App.state.map);
-                    L.control.layers({ "Satellite": satelliteLayer }).addTo(App.state.map);
+                    
+                    const esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                        attribution: 'Tiles &copy; Esri',
+                        maxZoom: 19
+                    });
+
+                    const bhuvanSatellite = L.tileLayer('https://bhuvan-vec1.nrsc.gov.in/bhuvan/gwc/service/wmts/rest/bhuvan:satellite_india/{z}/{x}/{y}?format=image/png', {
+                        attribution: '&copy; ISRO Bhuvan',
+                        maxZoom: 19
+                    });
+
+                    const baseMaps = {
+                        "ESRI Satellite": esriSatellite,
+                        "ISRO Bhuvan": bhuvanSatellite
+                    };
+
+                    esriSatellite.addTo(App.state.map);
+                    L.control.layers(baseMaps).addTo(App.state.map);
                     
                     const LocateControl = L.Control.extend({
                         options: { position: 'topright' },
@@ -384,17 +357,6 @@
                             }
                         });
                     });
-
-                    App.state.map.on('draw:editvertex', (e) => {
-                        if (e.poly) {
-                            const polygon = e.poly;
-                            const area = L.GeometryUtil.geodesicArea(polygon.getLatLngs()[0]);
-                            App.elements.rooftopAreaInput.value = area.toFixed(2);
-                            if (polygon.getTooltip()) {
-                                polygon.setTooltipContent(`Area: ${area.toFixed(2)} m²`);
-                            }
-                        }
-                    });
                 },
                 populateStates() {
                     const T = App.state.translations[App.state.currentLang] || {};
@@ -422,108 +384,78 @@
                     
                     App.state.currentLang = lang;
                     const T = App.state.translations[lang] || {};
-                    App.elements.selectedLangText.textContent = lang.toUpperCase();
                     App.elements.langDropdownMenu.querySelectorAll('a').forEach(link => link.classList.toggle('active', link.dataset.lang === lang));
+                    
                     Object.keys(T).forEach(key => {
                         const element = document.getElementById(key);
                         if (element && typeof T[key] === 'string' && !T[key].includes('{')) {
                              if (key.endsWith('-placeholder')) { element.placeholder = T[key];
-                            } else if (key.endsWith('-btn') || key.endsWith('-cta')) { const span = element.querySelector('span'); if (span) span.textContent = T[key]; else element.textContent = T[key];
-                            } else { if(element.tagName === 'OPTION') { element.textContent = T[key]; } else { element.innerHTML = T[key]; } }
+                            } else if (key.endsWith('-btn') || key.endsWith('-cta') || key.endsWith('-text')) { 
+                                const span = element.querySelector('span'); 
+                                if (span) span.innerHTML = T[key]; 
+                                else element.innerHTML = T[key];
+                            } else { 
+                                if(element.tagName === 'OPTION') { element.textContent = T[key]; } 
+                                else { element.innerHTML = T[key]; } 
+                            }
                         }
                     });
+                    
                     App.ui.populateStates();
                     if(selectedState) {
                         App.elements.stateSelect.value = selectedState;
                         App.ui.populateDistricts(selectedState);
-                        if(selectedDistrict) {
-                             App.elements.districtSelect.value = selectedDistrict;
-                        }
+                        if(selectedDistrict) App.elements.districtSelect.value = selectedDistrict;
                     }
                     
-                    if (App.state.lastResults) {
-                        App.ui.renderResults(App.state.lastResults);
-                    }
+                    if (App.state.lastResults) App.ui.renderResults(App.state.lastResults);
                 },
                 renderResults(results) {
                      const { inputs, data, annualHarvest, daysCovered, recommendation, feasibility, aiSuccessPrediction } = results;
                      const T = App.state.translations[App.state.currentLang] || {};
                      const format = App.helpers.format;
 
-                     // AI Card Translations (can be expanded in translations.json later)
-                    const T_AI = {
-                        en: {
-                            title: "AI Success Prediction",
-                            subtitle: `Based on historical data from similar projects, our AI predicts a <strong>{score}% chance of success</strong> for the recommended structure in your location.`
-                        },
-                        hi: {
-                            title: "एआई सफलता भविष्यवाणी",
-                            subtitle: `समान परियोजनाओं के ऐतिहासिक आंकड़ों के आधार पर, हमारा एआई आपके स्थान पर अनुशंसित संरचना के लिए <strong>{score}% सफलता की संभावना</strong> की भविष्यवाणी करता है।`
-                        },
-                        bn: {
-                            title: "এআই সাফল্যের পূর্বাভাস",
-                            subtitle: "অনুরূপ প্রকল্পগুলি থেকে ঐতিহাসিক তথ্যের ভিত্তিতে, আমাদের এআই আপনার অবস্থানে প্রস্তাবিত কাঠামোর জন্য <strong>{score}% সাফল্যের সম্ভাবনা</strong> পূর্বাভাস দেয়।"
-                        },
-                        mr: {
-                            title: "एआय यश भविष्यवाणी",
-                            subtitle: "तत्सम प्रकल्पांच्या ऐतिहासिक डेटावर आधारित, आमचे एआय तुमच्या ठिकाणी शिफारस केलेल्या संरचनेसाठी <strong>{score}% यशाची शक्यता</strong> वर्तवते."
-                        },
-                        te: {
-                            title: "AI సక్సెస్ ప్రిడిక్షన్",
-                            subtitle: "ఇలాంటి ప్రాజెక్టుల నుండి చారిత్రక డేటా ఆధారంగా, మా AI మీ ప్రాంతంలో సిఫార్సు చేయబడిన నిర్మాణం కోసం <strong>{score}% విజయం సాధించే అవకాశం</strong> ఉందని అంచనా వేస్తుంది."
-                        },
-                        ta: {
-                            title: "AI வெற்றி கணிப்பு",
-                            subtitle: "ஒத்த திட்டங்களின் வரலாற்றுத் தரவுகளின் அடிப்படையில், எங்கள் AI உங்கள் இருப்பிடத்தில் பரிந்துரைக்கப்பட்ட அமைப்புக்கு <strong>{score}% வெற்றி வாய்ப்பை</strong> கணித்துள்ளது."
-                        }
-                    };
-                    const currentT_AI = T_AI[App.state.currentLang] || T_AI.en;
-
-
-                    const aiCardHTML = `
-                        <div class="result-card glassmorphism-card p-6 rounded-2xl">
-                            <h4 class="text-xl font-bold text-cyan-300 mb-4">${currentT_AI.title}</h4>
+                     const aiCardContainerHTML = `
+                        <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200">
+                            <h4 class="text-xl font-bold text-cyan-600 mb-4">${T['ai-title']}</h4>
                             <div class="flex items-center justify-center space-x-4 sm:space-x-6">
                                 <div class="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
                                     <svg class="w-full h-full" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
-                                        <circle class="text-slate-600" stroke-width="3" stroke="currentColor" fill="transparent" r="15.9155" cx="18" cy="18" />
-                                        <circle class="text-cyan-400 transition-all duration-1000 ease-out"
-                                            stroke-width="3"
-                                            stroke-dasharray="${aiSuccessPrediction || 0}, 100"
-                                            stroke-linecap="round"
-                                            stroke="currentColor"
-                                            fill="transparent"
-                                            r="15.9155" cx="18" cy="18" />
+                                        <circle class="text-slate-200" stroke-width="3" stroke="currentColor" fill="transparent" r="15.9155" cx="18" cy="18" />
+                                        <circle class="text-cyan-500 transition-all duration-1000 ease-out" stroke-width="3" stroke-dasharray="${aiSuccessPrediction || 0}, 100" stroke-linecap="round" stroke="currentColor" fill="transparent" r="15.9155" cx="18" cy="18" />
                                     </svg>
-                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-bold text-white">${aiSuccessPrediction || 0}<span class="text-lg sm:text-xl">%</span></div>
+                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl sm:text-3xl font-bold text-slate-700">${aiSuccessPrediction || 0}<span class="text-lg sm:text-xl">%</span></div>
                                 </div>
-                                <p class="text-slate-300 flex-1 text-sm sm:text-base">${format(currentT_AI.subtitle, {score: aiSuccessPrediction || 0})}</p>
+                                <p class="text-slate-600 flex-1 text-sm sm:text-base">${format(T['ai-subtitle'], {score: aiSuccessPrediction || 0})}</p>
                             </div>
-                        </div>
-                    `;
+                            <p class="text-xs text-center text-slate-500 mt-4 pt-4 border-t border-slate-200">${T['ai-disclaimer']}</p>
+                        </div>`;
                      
                      App.elements.resultsContainer.innerHTML = `
-                        <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-${feasibility.color}-400 mb-2">${T['feasibility-title']}</h4><p class="text-2xl font-bold text-white">${T[feasibility.ratingKey]}</p><p class="text-gray-300 mt-1">${T[feasibility.textKey]}</p></div>
-                        ${aiCardHTML}
-                        <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-blue-300 mb-2">${T['harvest-title']}</h4><p class="text-4xl font-extrabold text-white">${annualHarvest.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)} ${T['harvest-unit']}</p><p class="text-gray-300 mt-2">${format(T['harvest-subtitle'], {area: inputs.rooftopArea})}</p></div>
-                        <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-green-300 mb-2">${T['impact-title']}</h4><p class="text-2xl font-bold text-white">${format(T['impact-text'], {residents: inputs.residents, days: daysCovered})}</p></div>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-yellow-300 mb-2">${T['structure-title']}</h4><div class="flex items-start space-x-4"><div>${App.ui.getIcon(recommendation.icon)}</div><div><p class="text-2xl font-bold text-white">${T[recommendation.nameKey]}</p><p class="text-gray-300 mt-1">${T[recommendation.descKey]}</p></div></div></div>
-                            <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-orange-300 mb-2">${T['dimensions-title']}</h4><p class="text-2xl font-bold text-white">${recommendation.dimensions.text}</p>${recommendation.dimensions.area ? `<p class="text-gray-300 mt-1"><span class="font-semibold">${T['dimensions-area']}</span> ${recommendation.dimensions.area} m²</p>` : ''}</div>
+                        <div id="report-content">
+                            <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200"><h4 class="text-xl font-bold text-${feasibility.color}-600 mb-2">${T['feasibility-title']}</h4><p class="text-2xl font-bold text-slate-800">${T[feasibility.ratingKey]}</p><p class="text-slate-600 mt-1">${T[feasibility.textKey]}</p></div>
+                            ${aiCardContainerHTML}
+                            <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200 mt-6"><h4 class="text-xl font-bold text-blue-600 mb-2">${T['harvest-title']}</h4><p class="text-4xl font-extrabold text-slate-800">${annualHarvest.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)} <span class="text-2xl font-medium text-slate-500">${T['harvest-unit']}</span></p><p class="text-slate-600 mt-2">${format(T['harvest-subtitle'], {area: inputs.rooftopArea})}</p></div>
+                            <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200 mt-6"><h4 class="text-xl font-bold text-green-600 mb-2">${T['impact-title']}</h4><p class="text-2xl font-bold text-slate-800">${format(T['impact-text'], {residents: inputs.residents, days: daysCovered})}</p></div>
+                            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                                <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200"><h4 class="text-xl font-bold text-yellow-600 mb-2">${T['structure-title']}</h4><div class="flex items-start space-x-4"><div>${App.ui.getIcon(recommendation.icon)}</div><div><p class="text-2xl font-bold text-slate-800">${T[recommendation.nameKey]}</p><p class="text-slate-600 mt-1">${T[recommendation.descKey]}</p></div></div></div>
+                                <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200"><h4 class="text-xl font-bold text-orange-600 mb-2">${T['dimensions-title']}</h4><p class="text-xl font-bold text-slate-800">${T[recommendation.dimensions.text] || recommendation.dimensions.text}</p>${recommendation.dimensions.area ? `<p class="text-slate-600 mt-1"><span class="font-semibold">${T['dimensions-area']}</span> ${recommendation.dimensions.area} m²</p>` : ''}</div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                                <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200"><h4 class="text-xl font-bold text-purple-600 mb-2">${T['cost-title']}</h4><p class="text-3xl font-bold text-slate-800">₹ ${recommendation.cost.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)}</p><p class="text-slate-600 mt-2">${format(T['cost-subtitle'], {savings: recommendation.annualSavings.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)})}</p><p class="text-xs text-slate-500 mt-2 italic">${T['cost-disclaimer']}</p></div>
+                                <div class="result-card bg-white p-6 rounded-2xl shadow-md border border-slate-200"><h4 class="text-xl font-bold text-teal-600 mb-2">${T['data-title']}</h4><ul class="space-y-1 text-slate-700"><li><span class="font-semibold">${T['data-rainfall']}</span> ${data.rainfall} mm</li><li><span class="font-semibold">${T['data-depth']}</span> ~${data.groundwaterDepth} m</li><li><span class="font-semibold">${T['data-aquifer']}</span> ${data.aquifer}</li><li><span class="font-semibold">${T['data-runoff']}</span> ${inputs.runoffCoefficient}</li></ul><p class="text-xs text-slate-500 mt-2">${format(T['data-location'], {district: inputs.district, state: inputs.state})}</p></div>
+                            </div>
                         </div>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-purple-300 mb-2">${T['cost-title']}</h4><p class="text-3xl font-bold text-white">₹ ${recommendation.cost.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)}</p><p class="text-gray-300 mt-2">${format(T['cost-subtitle'], {savings: recommendation.annualSavings.toLocaleString(App.state.currentLang.startsWith('en') ? 'en-IN' : `${App.state.currentLang}-IN`)})}</p><p class="text-sm text-gray-400 mt-2 italic">${T['cost-disclaimer']}</p></div>
-                            <div class="result-card glassmorphism-card p-6 rounded-2xl"><h4 class="text-xl font-bold text-teal-300 mb-2">${T['data-title']}</h4><p class="text-lg text-white"><span class="font-semibold">${T['data-rainfall']}</span> ${data.rainfall} mm</p><p class="text-lg text-white mt-1"><span class="font-semibold">${T['data-depth']}</span> ~${data.groundwaterDepth} m</p><p class="text-lg text-white mt-1"><span class="font-semibold">${T['data-aquifer']}</span> ${data.aquifer}</p><p class="text-lg text-white mt-1"><span class="font-semibold">${T['data-runoff']}</span> ${inputs.runoffCoefficient}</p><p class="text-sm text-gray-400 mt-2">${format(T['data-location'], {district: inputs.district, state: inputs.state})}</p></div>
-                        </div>
-                        <div class="result-card mt-6"><button id="download-pdf-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all transform hover:scale-105 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>Download Report as PDF</button></div>
+                        <div id="pdf-container" class="result-card mt-6"><button id="download-pdf-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all transform hover:scale-105 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg><span id="pdf-btn-text">Download Report</span></button></div>
                     `;
+                     document.getElementById('pdf-btn-text').textContent = T['pdf-download-btn-text'] || 'Download Report';
                      document.getElementById('download-pdf-btn').addEventListener('click', () => App.events.handlePdfDownload());
                 },
                 getIcon(name) {
                     const icons = {
-                        pit: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300"><path d="M12 22v-6"/><path d="M12 8V2"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/><path d="m15 15-3 3-3-3"/><path d="M15 9l-3-3-3 3"/></svg>',
-                        tank: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300"><path d="M22 11h-2.17l-1-4H5.17l-1 4H2"/><path d="M5 11v11h14V11"/><path d="M8 11v11h2V11"/><path d="M14 11v11h2V11"/><path d="M4.5 9.5a2.5 2.5 0 0 1 0-5h15a2.5 2.5 0 0 1 0 5"/></svg>',
-                        borewell: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-300"><path d="M14 6h3v3"/><path d="M10.5 10.5 17 4"/><path d="M17 11v6l-5 5-5-5v-6l5-5z"/><path d="m5 15 5-5"/><path d="M9 22v-3h6v3"/></svg>'
+                        pit: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="M12 22v-6"/><path d="M12 8V2"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/><path d="m15 15-3 3-3-3"/><path d="M15 9l-3-3-3 3"/></svg>',
+                        tank: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="M22 11h-2.17l-1-4H5.17l-1 4H2"/><path d="M5 11v11h14V11"/><path d="M8 11v11h2V11"/><path d="M14 11v11h2V11"/><path d="M4.5 9.5a2.5 2.5 0 0 1 0-5h15a2.5 2.5 0 0 1 0 5"/></svg>',
+                        borewell: '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="M14 6h3v3"/><path d="M10.5 10.5 17 4"/><path d="M17 11v6l-5 5-5-5v-6l5-5z"/><path d="m5 15 5-5"/><path d="M9 22v-3h6v3"/></svg>'
                     };
                     return icons[name] || '';
                 },
@@ -548,9 +480,8 @@
                     });
                      document.querySelectorAll('#progress-bar .progress-line').forEach(lineEl => {
                         const lineNum = parseInt(lineEl.dataset.stepLine);
-                        lineEl.style.backgroundColor = lineNum < currentStep ? '#16a34a' : '#475569';
+                        lineEl.style.backgroundColor = lineNum < currentStep ? '#22c55e' : '#e2e8f0';
                     });
-
                 }
             },
             events: {
@@ -567,6 +498,13 @@
                     App.elements.loader.classList.remove('hidden'); App.elements.loader.classList.add('flex');
                     App.elements.placeholder.classList.add('hidden'); App.elements.resultsContainer.classList.add('hidden');
                     
+                    const T = App.state.translations[App.state.currentLang] || {};
+                    const loaderText = App.elements.loaderText;
+                    loaderText.textContent = T['loader-text-connecting'] || "Connecting to server...";
+                    const slowLoadTimeout = setTimeout(() => {
+                        loaderText.textContent = T['loader-text-waking'] || "Waking up AI server, please wait...";
+                    }, 4000);
+
                     try {
                         const formData = new FormData(App.elements.form);
                         const inputs = {
@@ -584,6 +522,8 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(inputs)
                         });
+                        
+                        clearTimeout(slowLoadTimeout);
 
                         if (!response.ok) {
                             const errorData = await response.json().catch(() => null);
@@ -592,19 +532,19 @@
                         }
 
                         const results = await response.json();
-                        if (results.error) {
-                            throw new Error(results.error);
-                        }
+                        if (results.error) { throw new Error(results.error); }
                         
                         App.state.lastResults = results;
                         App.ui.renderResults(results); 
                         App.ui.showResults();
 
                     } catch (error) { 
+                        clearTimeout(slowLoadTimeout);
                         console.error("Analysis failed:", error); 
                         App.ui.showNotification(`Analysis failed: ${error.message}. Please check the backend server logs.`); 
                         App.ui.showPlaceholder();
                     } finally { 
+                        clearTimeout(slowLoadTimeout);
                         App.elements.loader.classList.add('hidden'); 
                         App.elements.loader.classList.remove('flex'); 
                     }
@@ -627,14 +567,16 @@
                     }
                 },
                 handleDetectLocation() {
+                    const T = App.state.translations[App.state.currentLang] || {};
                     const btn = App.elements.detectLocationBtn;
+                    const originalText = btn.innerHTML;
+                    
                     const resetButton = () => {
-                        const originalText = App.state.translations[App.state.currentLang]['auto-location-text'] || 'Auto-select Location';
-                        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg><span>${originalText}</span>`;
+                        btn.innerHTML = originalText;
                         btn.disabled = false;
                     };
 
-                    if (!('geolocation' in navigator)) { App.ui.showNotification("Geolocation is not supported by your browser."); return; }
+                    if (!('geolocation' in navigator)) { App.ui.showNotification(T['geo-unsupported'] || "Geolocation is not supported by your browser."); return; }
                     
                     btn.innerHTML = '<div class="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>';
                     btn.disabled = true;
@@ -644,13 +586,7 @@
                             const { latitude, longitude } = position.coords;
                             const currentUser = auth.currentUser;
                             if (currentUser) {
-                                App.logic.saveUserLocation(currentUser.uid, latitude, longitude)
-                                    .catch(error => { 
-                                        console.error("FIRESTORE ERROR: Could not save location.", error); 
-                                        App.ui.showNotification("Could not save location.");
-                                    });
-                            } else {
-                                App.ui.showNotification("User session not ready. Please try again.");
+                                App.logic.saveUserLocation(currentUser.uid, latitude, longitude).catch(err => console.error("Firestore Error:", err));
                             }
 
                             if(App.state.map) {
@@ -667,9 +603,13 @@
                             resetButton();
                         },
                         (error) => { 
-                            let message = `Error: ${error.message}.`;
-                            if (window.isSecureContext === false) { message += " Location access requires a secure (HTTPS) connection."; } 
-                            else { message += " Please enable location services in your browser/OS."; }
+                            let message;
+                            switch (error.code) {
+                                case error.PERMISSION_DENIED: message = T['geo-permission-denied'] || "Location access was denied. Please allow it in your browser settings."; break;
+                                case error.POSITION_UNAVAILABLE: message = T['geo-position-unavailable'] || "Location information is unavailable. Check network or OS settings."; break;
+                                case error.TIMEOUT: message = T['geo-timeout'] || "The request to get user location timed out."; break;
+                                default: message = T['geo-unknown-error'] || "An unknown error occurred while detecting location."; break;
+                            }
                             App.ui.showNotification(message);
                             resetButton();
                         },
@@ -684,61 +624,153 @@
                     else { App.elements.rooftopAreaInput.value = ''; setTimeout(() => {if(App.state.map) App.state.map.invalidateSize()}, 10); }
                 },
                 handleManualAreaInput() { if (App.state.areaInputMethod === 'manual') App.elements.rooftopAreaInput.value = App.elements.manualRooftopArea.value; },
-                handlePdfDownload() {
-                    const results = App.state.lastResults;
-                    if (!results) { App.ui.showNotification('Please analyze data first to generate a report.'); return; }
-                    const { jsPDF } = window.jspdf; const doc = new jsPDF('p', 'mm', 'a4');
-                    const { inputs, data, annualHarvest, daysCovered, recommendation, feasibility } = results;
-                    const T = App.state.translations['en'] || {}; const format = App.helpers.format;
-                    let y = 15; const page_width = doc.internal.pageSize.getWidth();
-                    const col1 = 20; const col2 = 80;
-                    function addText(text, x, yPos, size, style, color = '#000000', align) { doc.setFontSize(size); doc.setFont('helvetica', style); doc.setTextColor(color); doc.text(text, x, yPos, { align: align || 'left' }); }
-                    function addSection(title, yPos) { doc.setFillColor(236, 242, 255); doc.rect(15, yPos - 5, page_width - 30, 8, 'F'); addText(title, 20, yPos, 12, 'bold', '#0c4a6e'); return yPos + 10; }
-                    addText('AquaHarvest Report', page_width / 2, y, 22, 'bold', '#1e3a8a', 'center'); y += 15; doc.setDrawColor(200); doc.line(15, y, page_width - 15, y); y += 10;
-                    y = addSection(T['form-title'] || 'Project Inputs', y);
-                    addText(`Location: ${inputs.district}, ${inputs.state}`, col1, y, 11, 'normal'); addText(`Rooftop Area: ${inputs.rooftopArea} m²`, page_width - 20, y, 11, 'normal', null, 'right'); y += 7;
-                    addText(`Roof Type: ${inputs.roofTypeText}`, col1, y, 11, 'normal'); y += 7; addText(`Number of Residents: ${inputs.residents}`, col1, y, 11, 'normal'); addText(`Available Open Space: ${inputs.openSpace} m²`, page_width - 20, y, 11, 'normal', null, 'right'); y += 15;
-                    y = addSection('Key Results Summary', y);
-                    addText('Feasibility Check:', col1, y, 11, 'bold'); addText(T[feasibility.ratingKey], col2, y, 11, 'bold', feasibility.color === 'green' ? '#16a34a' : (feasibility.color === 'yellow' ? '#f59e0b' : '#ef4444')); y += 7;
-                    addText('Estimated Water Harvested:', col1, y, 11, 'bold'); addText(`${annualHarvest.toLocaleString('en-IN')} ${T['harvest-unit']}`, col2, y, 11, 'bold', '#2563eb'); y += 7;
-                    addText('Water-Saving Impact:', col1, y, 11, 'bold'); let impactText = format(T['impact-text'], {residents: inputs.residents, days: daysCovered}).replace(/<[^>]*>?/gm, ''); doc.text(doc.splitTextToSize(impactText, page_width - col2 - 15), col2, y); y += 15;
-                    y = addSection('Detailed Analysis', y);
-                    addText('Recommended Structure', col1, y, 11, 'bold'); addText(T[recommendation.nameKey], col2, y, 11, 'normal'); y += 6; doc.text(doc.splitTextToSize(T[recommendation.descKey], page_width - col2 - 15), col2, y); y += 15;
-                    addText('Recommended Dimensions', col1, y, 11, 'bold'); addText(recommendation.dimensions.text, col2, y, 11, 'normal'); y += 10;
-                    addText('Cost & Benefit Analysis', col1, y, 11, 'bold'); y += 8; addText('Estimated Project Cost:', col1 + 5, y, 11, 'normal'); addText(`Rs. ${recommendation.cost.toLocaleString('en-IN')}`, page_width - 20, y, 11, 'bold', '#374151', 'right'); y += 7; addText('Estimated Annual Savings:', col1 + 5, y, 11, 'normal'); addText(`Rs. ${recommendation.annualSavings.toLocaleString('en-IN')}`, page_width - 20, y, 11, 'bold', '#16a34a', 'right'); y += 12; 
-                    y = addSection('Local Data Used', y);
-                    addText(T['data-rainfall'], col1, y, 11, 'bold'); addText(`${data.rainfall} mm`, col2, y, 11, 'normal'); y += 7; addText(T['data-depth'], col1, y, 11, 'bold'); addText(`~${data.groundwaterDepth} m`, col2, y, 11, 'normal'); y += 7; addText(T['data-aquifer'], col1, y, 11, 'bold'); addText(data.aquifer, col2, y, 11, 'normal'); y += 7;
-                    addText(T['data-runoff'] || 'Runoff Coefficient:', col1, y, 11, 'bold'); addText(`${inputs.runoffCoefficient}`, col2, y, 11, 'normal');
-                    doc.save('AquaHarvest-Report.pdf');
+                async handlePdfDownload() {
+                    const T = App.state.translations[App.state.currentLang] || App.state.translations['en'];
+                    const btn = document.getElementById('download-pdf-btn');
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = `<div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>`;
+                    btn.disabled = true;
+
+                    try {
+                        const results = App.state.lastResults;
+                        if (!results) {
+                            App.ui.showNotification('Please analyze data first to generate a report.');
+                            btn.innerHTML = originalHTML;
+                            btn.disabled = false;
+                            return;
+                        }
+
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF('p', 'mm', 'a4');
+                        const { inputs, data, annualHarvest, daysCovered, recommendation, feasibility } = results;
+                        const format = App.helpers.format;
+
+                        const imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/240px-Emblem_of_India.svg.png';
+                        const response = await fetch(imageUrl);
+                        const blob = await response.blob();
+                        const reader = new FileReader();
+                        reader.readAsDataURL(blob);
+                        reader.onloadend = function() {
+                            const base64data = reader.result;
+                            const page_width = doc.internal.pageSize.getWidth();
+                            const margin = 15;
+                            let y = 0;
+
+                            // ---- PDF HEADER ----
+                            doc.addImage(base64data, 'PNG', margin, 10, 15, 18);
+                            doc.setFont('helvetica', 'bold');
+                            doc.setFontSize(12);
+                            doc.setTextColor('#000080'); // Dark Blue
+                            doc.text(T['govt-name-text'], page_width / 2, 12, { align: 'center' });
+                            doc.setFontSize(10);
+                            doc.setTextColor('#333333');
+                            doc.text(T['ministry-name-text'], page_width / 2, 18, { align: 'center' });
+                            doc.text(T['header-subtitle'], page_width / 2, 23, { align: 'center' });
+
+                            doc.setDrawColor(0, 0, 128);
+                            doc.setLineWidth(0.5);
+                            doc.line(margin, 30, page_width - margin, 30);
+
+                            // ---- PDF TITLE ----
+                            y = 40;
+                            doc.setFont('helvetica', 'bold');
+                            doc.setFontSize(16);
+                            doc.setTextColor('#1e3a8a');
+                            doc.text('Rainwater Harvesting Potential Report', page_width / 2, y, { align: 'center' });
+                            y += 10;
+                            
+                            // ---- REPORT METADATA ----
+                            doc.setFont('helvetica', 'normal');
+                            doc.setFontSize(9);
+                            doc.setTextColor('#666');
+                            const today = new Date();
+                            doc.text(`Report Generated On: ${today.toLocaleDateString('en-GB')}`, margin, y);
+                            doc.text(`Location: ${inputs.district}, ${inputs.state}`, page_width - margin, y, { align: 'right' });
+                            y += 10;
+
+                            // ---- SECTION HELPER ----
+                            function addSection(title, yPos) {
+                                doc.setFillColor(236, 242, 255);
+                                doc.rect(margin, yPos - 4, page_width - (margin * 2), 9, 'F');
+                                doc.setFont('helvetica', 'bold');
+                                doc.setFontSize(12);
+                                doc.setTextColor('#0c4a6e');
+                                doc.text(title, margin + 2, yPos + 2);
+                                return yPos + 12;
+                            }
+                            function addRow(label, value, yPos, valueColor = '#333333'){
+                                doc.setFont('helvetica', 'bold');
+                                doc.setFontSize(10);
+                                doc.setTextColor('#333333');
+                                doc.text(label, margin + 2, yPos);
+                                doc.setFont('helvetica', 'normal');
+                                doc.setTextColor(valueColor);
+                                doc.text(value, 80, yPos, {maxWidth: 100});
+                                return yPos + (doc.getTextDimensions(value, {maxWidth: 100}).h > 6 ? 12: 7);
+                            }
+
+                            // ---- REPORT CONTENT ----
+                            y = addSection('Key Assessment Results', y);
+                            y = addRow(T['feasibility-title'], T[feasibility.ratingKey], y, feasibility.color === 'green' ? '#16a34a' : (feasibility.color === 'yellow' ? '#f59e0b' : '#ef4444'));
+                            y = addRow(T['harvest-title'], `${annualHarvest.toLocaleString('en-IN')} ${T['harvest-unit']}`, y, '#2563eb');
+                            let impactText = format(T['impact-text'], { residents: inputs.residents, days: daysCovered }).replace(/<[^>]*>?/gm, '');
+                            y = addRow(T['impact-title'], impactText, y);
+                            y+= 5;
+                            
+                            y = addSection('Technical Recommendations', y);
+                            y = addRow(T['structure-title'], T[recommendation.nameKey], y);
+                            y = addRow('Description', T[recommendation.descKey], y);
+                            y = addRow(T['dimensions-title'], T[recommendation.dimensions.text] || recommendation.dimensions.text, y);
+                            y+= 5;
+
+                            y = addSection('Financial Analysis', y);
+                            y = addRow('Estimated Project Cost:', `Rs. ${recommendation.cost.toLocaleString('en-IN')}`, y);
+                            y = addRow('Estimated Annual Savings:', `Rs. ${recommendation.annualSavings.toLocaleString('en-IN')}`, y, '#16a34a');
+                            y+= 5;
+                            
+                            y = addSection('Input Data Used', y);
+                            y = addRow('Rooftop Area:', `${inputs.rooftopArea} m²`, y);
+                            y = addRow('Roof Type:', `${inputs.roofTypeText} (Coeff: ${inputs.runoffCoefficient})`, y);
+                            y = addRow(T['data-rainfall'], `${data.rainfall} mm`, y);
+                            y = addRow(T['data-depth'], `~${data.groundwaterDepth} m`, y);
+                            y = addRow(T['data-aquifer'], `${data.aquifer}`, y);
+                            
+                            // ---- PDF FOOTER ----
+                            const pageCount = doc.internal.getNumberOfPages();
+                            for (let i = 1; i <= pageCount; i++) {
+                                doc.setPage(i);
+                                doc.setFontSize(8);
+                                doc.setTextColor(150);
+                                doc.text('Page ' + String(i) + ' of ' + String(pageCount), page_width - margin, 285, { align: 'right' });
+                                doc.text('Generated by AquaHarvest Portal | Ministry of Jal Shakti', margin, 285);
+                                doc.setDrawColor(0, 0, 128);
+                                doc.line(margin, 280, page_width - margin, 280);
+                            }
+                            
+                            doc.save('AquaHarvest-Report.pdf');
+                            btn.innerHTML = originalHTML;
+                            btn.disabled = false;
+                        };
+                    } catch (error) {
+                        console.error("PDF Generation Failed:", error);
+                        App.ui.showNotification("Could not generate PDF. Please try again.");
+                        btn.innerHTML = originalHTML;
+                        btn.disabled = false;
+                    }
                 },
                 validateStep(stepNum) {
                     const T = App.state.translations[App.state.currentLang] || {};
                     if(stepNum === 1) {
-                        if(!App.elements.stateSelect.value) {
-                            App.ui.showNotification(T['validation-state'] || "Please select a state.", true, App.elements.stateSelect);
-                            return false;
-                        }
-                        if(!App.elements.districtSelect.value) {
-                            App.ui.showNotification(T['validation-district'] || "Please select a district.", true, App.elements.districtSelect);
-                            return false;
-                        }
+                        if(!App.elements.stateSelect.value) { App.ui.showNotification(T['validation-state'] || "Please select a state."); return false; }
+                        if(!App.elements.districtSelect.value) { App.ui.showNotification(T['validation-district'] || "Please select a district."); return false; }
                     } else if (stepNum === 2) {
                          const area = parseFloat(App.elements.rooftopAreaInput.value);
-                         if(isNaN(area) || area <= 0) {
-                            App.ui.showNotification(T['validation-area'] || "Please enter a valid rooftop area.", true, App.state.areaInputMethod === 'manual' ? App.elements.manualRooftopArea : App.elements.mapContainer);
-                            return false;
-                         }
+                         if(isNaN(area) || area <= 0) { App.ui.showNotification(T['validation-area'] || "Please enter a valid rooftop area."); return false; }
                     } else if (stepNum === 3) {
                         const residents = parseInt(App.elements.residentsInput.value);
-                        if(isNaN(residents) || residents <= 0) {
-                             App.ui.showNotification(T['validation-residents'] || "Please enter a valid number of residents.", true, App.elements.residentsInput);
-                            return false;
-                        }
+                        if(isNaN(residents) || residents <= 0) { App.ui.showNotification(T['validation-residents'] || "Please enter a valid number of residents."); return false; }
                         const openSpace = App.elements.openSpaceInput.value;
-                        if(openSpace === '' || isNaN(parseFloat(openSpace)) || parseFloat(openSpace) < 0) {
-                            App.ui.showNotification(T['validation-openspace'] || "Please enter a valid open space area.", true, App.elements.openSpaceInput);
-                            return false;
-                        }
+                        if(openSpace === '' || isNaN(parseFloat(openSpace)) || parseFloat(openSpace) < 0) { App.ui.showNotification(T['validation-openspace'] || "Please enter a valid open space area."); return false; }
                     }
                     return true;
                 },
@@ -763,7 +795,8 @@
                     mapOptionBtn: 'map-option-btn', placeholder: 'placeholder', loader: 'loader',
                     loaderText: 'loader-text', resultsContainer: 'results', detectLocationBtn: 'detect-location-btn',
                     langDropdownBtn: 'lang-dropdown-btn', langDropdownMenu: 'lang-dropdown-menu',
-                    selectedLangText: 'selected-lang-text', loadingOverlay: 'loading-overlay',
+                    langBtnText: 'lang-btn-text', // Added this
+                    loadingOverlay: 'loading-overlay',
                     rooftypeSelect: 'rooftype-select', residentsInput: 'residents', openSpaceInput: 'open-space',
                     notification: 'notification', notificationMessage: 'notification-message',
                     steps: document.querySelectorAll('.step-content'),
@@ -819,7 +852,6 @@
                 this.elements.manualRooftopArea.addEventListener('input', () => this.events.handleManualAreaInput());
                 this.elements.langDropdownBtn.addEventListener('click', () => this.elements.langDropdownMenu.classList.toggle('hidden'));
                 
-                // Step Navigation
                 this.elements.nextBtn1.addEventListener('click', () => this.events.handleStepNavigation('next'));
                 this.elements.prevBtn2.addEventListener('click', () => this.events.handleStepNavigation('prev'));
                 this.elements.nextBtn2.addEventListener('click', () => this.events.handleStepNavigation('next'));
