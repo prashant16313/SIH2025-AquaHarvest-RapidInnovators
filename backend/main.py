@@ -10,7 +10,11 @@ import os
 app = FastAPI()
 
 # --- CORS Middleware ---
-origins = ["*"]
+origins = [
+    "http://127.0.0.1:5500",  # For VS Code Live Server
+    "http://localhost:5500",   # For local testing
+    "https://aquaharvestbyrapidinnovators.netlify.app"    # IMPORTANT: Paste your Netlify site URL here
+]
 
 app.add_middleware(
     CORSMiddleware,
