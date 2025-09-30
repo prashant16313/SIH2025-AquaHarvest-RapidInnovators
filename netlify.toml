@@ -1,0 +1,6 @@
+# Netlify Build Configuration File
+
+[build]
+  # Yeh command Netlify ko batata hai ki agar badlav (changes)
+  # sirf 'backend' folder ke andar hue hain, toh build ko ignore kar do (mat chalao).
+  ignore = "git diff --quiet HEAD^ HEAD -- backend/"
