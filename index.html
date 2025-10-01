@@ -25,8 +25,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.fullscreen/2.0.0/Control.FullScreen.min.js"></script>
 
-    <!-- jsPDF Library -->
+    <!-- jsPDF and html2canvas for PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -65,7 +66,6 @@
         .progress-line { transition: background-color 0.3s ease; }
         .step-content { animation: fadeIn 0.5s; }
 
-        /* NEW STYLES FOR LEAFLET DRAW CONTROLS */
         .leaflet-draw-draw-polygon { 
             background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23334155" stroke-width="2"%3e%3cpath d="M3.3 8.2 9.7 3 18 5l3 10-8 4-8-3-1.7-8.8Z"/%3e%3c/svg%3e') !important;
             background-repeat: no-repeat !important; background-position: center !important; background-size: 20px 20px !important; 
@@ -514,7 +514,9 @@
                             runoffCoefficient: parseFloat(formData.get('rooftype')),
                             residents: parseInt(formData.get('residents')),
                             openSpace: parseFloat(formData.get('open-space')) || 0,
-                            roofTypeText: App.elements.rooftypeSelect.options[App.elements.rooftypeSelect.selectedIndex].text
+                            roofTypeText: App.elements.rooftypeSelect.options[App.elements.rooftypeSelect.selectedIndex].text,
+                            latitude: App.state.latitude, // NEW: Add latitude
+                            longitude: App.state.longitude // NEW: Add longitude
                         };
 
                         const response = await fetch('https://aquaharvest-backend.onrender.com/analyze', {
@@ -557,14 +559,22 @@
                     App.ui.showPlaceholder(); App.elements.manualOptionBtn.click(); App.ui.populateDistricts('');
                     App.ui.switchLanguage(App.state.currentLang);
                     App.state.currentStep = 1;
+                    App.state.latitude = null; // NEW: Reset coordinates
+                    App.state.longitude = null; // NEW: Reset coordinates
                     App.ui.updateStepView();
                 },
-                handleStateChange(e) { App.ui.populateDistricts(e.target.value); },
+                handleStateChange(e) { 
+                    App.ui.populateDistricts(e.target.value); 
+                    App.state.latitude = null; // NEW: Reset coordinates on change
+                    App.state.longitude = null; // NEW: Reset coordinates on change
+                },
                 handleDistrictChange(e) {
                     const state = App.elements.stateSelect.value; const district = e.target.value;
                     if (state && district && App.state.districtData[state][district]) {
                         if(App.state.map) App.state.map.setView(App.state.districtData[state][district].coords, 18);
                     }
+                    App.state.latitude = null; // NEW: Reset coordinates on change
+                    App.state.longitude = null; // NEW: Reset coordinates on change
                 },
                 handleDetectLocation() {
                     const T = App.state.translations[App.state.currentLang] || {};
@@ -582,8 +592,11 @@
                     btn.disabled = true;
                     
                     navigator.geolocation.getCurrentPosition(
-                        (position) => {
+                        async (position) => {
                             const { latitude, longitude } = position.coords;
+                            App.state.latitude = latitude; // NEW: Store coordinates
+                            App.state.longitude = longitude; // NEW: Store coordinates
+
                             const currentUser = auth.currentUser;
                             if (currentUser) {
                                 App.logic.saveUserLocation(currentUser.uid, latitude, longitude).catch(err => console.error("Firestore Error:", err));
@@ -594,12 +607,36 @@
                                 if(App.state.locationIndicator) App.state.map.removeLayer(App.state.locationIndicator);
                                 App.state.locationIndicator = L.circle([latitude, longitude], { radius: 10, color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.75 }).addTo(App.state.map);
                             }
-                            const closest = App.logic.findClosestDistrict(latitude, longitude);
-                            if (closest) {
-                                App.elements.stateSelect.value = closest.state;
-                                App.ui.populateDistricts(closest.state);
-                                App.elements.districtSelect.value = closest.district;
+
+                            // --- NEW: Reverse Geocoding Logic ---
+                            try {
+                                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`);
+                                if (!response.ok) throw new Error('Reverse geocoding failed');
+                                const data = await response.json();
+                                
+                                const state = data.address.state;
+                                // Nominatim sometimes returns 'county' for district.
+                                const district = data.address.county || data.address.city_district || data.address.suburb;
+
+                                if (state && district && App.state.districtData[state] && App.state.districtData[state][district]) {
+                                    App.elements.stateSelect.value = state;
+                                    App.ui.populateDistricts(state);
+                                    App.elements.districtSelect.value = district;
+                                    App.ui.showNotification("Location detected accurately!", false);
+                                } else {
+                                    throw new Error("District not found in our database.");
+                                }
+                            } catch (apiError) {
+                                console.warn("Reverse geocoding failed, falling back to closest district:", apiError);
+                                const closest = App.logic.findClosestDistrict(latitude, longitude);
+                                if (closest) {
+                                    App.elements.stateSelect.value = closest.state;
+                                    App.ui.populateDistricts(closest.state);
+                                    App.elements.districtSelect.value = closest.district;
+                                }
                             }
+                            // --- END: Reverse Geocoding Logic ---
+                            
                             resetButton();
                         },
                         (error) => { 
@@ -632,128 +669,73 @@
                     btn.disabled = true;
 
                     try {
-                        const results = App.state.lastResults;
-                        if (!results) {
-                            App.ui.showNotification('Please analyze data first to generate a report.');
-                            btn.innerHTML = originalHTML;
-                            btn.disabled = false;
-                            return;
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+                        const page_width = doc.internal.pageSize.getWidth();
+                        const margin = 15;
+                        let y = 0;
+
+                        // Official Header
+                        doc.addImage('https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/120px-Emblem_of_India.svg.png', 'PNG', (page_width / 2) - 10, 15, 20, 24);
+                        y = 45;
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(14);
+                        doc.setTextColor('#0c4a6e');
+                        doc.text(T['govt-name-text'].toUpperCase(), page_width / 2, y, { align: 'center' });
+                        y += 7;
+                        doc.setFontSize(12);
+                        doc.text(T['ministry-name-text'].toUpperCase(), page_width / 2, y, { align: 'center' });
+                        y += 6;
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(11);
+                        doc.setTextColor('#1e3a8a');
+                        doc.text('Central Ground Water Board', page_width / 2, y, { align: 'center' });
+                        y += 10;
+                        doc.setDrawColor('#9ca3af');
+                        doc.setLineWidth(0.5);
+                        doc.line(margin, y, page_width - margin, y);
+                        y += 12;
+
+                        // Report Title
+                        doc.setFontSize(18);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setTextColor('#111827');
+                        doc.text('Rainwater Harvesting Feasibility Report', page_width / 2, y, { align: 'center' });
+                        y += 15;
+
+                        // Body Content
+                        const reportContentElement = document.getElementById('report-content').cloneNode(true);
+                        document.body.appendChild(reportContentElement);
+                        
+                        // Increase resolution for better quality
+                        const canvas = await html2canvas(reportContentElement, { scale: 3, useCORS: true });
+                        document.body.removeChild(reportContentElement);
+                        
+                        const imgData = canvas.toDataURL('image/png');
+                        const imgWidth = page_width - (margin * 2);
+                        const pageHeight = 297;
+                        const imgHeight = canvas.height * imgWidth / canvas.width;
+                        let heightLeft = imgHeight;
+                        
+                        let position = y;
+                        
+                        doc.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+                        heightLeft -= (pageHeight - y);
+                        
+                        while (heightLeft >= 0) {
+                          position = heightLeft - imgHeight;
+                          doc.addPage();
+                          doc.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+                          heightLeft -= pageHeight;
                         }
 
-                        const { jsPDF } = window.jspdf;
-                        const doc = new jsPDF('p', 'mm', 'a4');
-                        const { inputs, data, annualHarvest, daysCovered, recommendation, feasibility } = results;
-                        const format = App.helpers.format;
+                        doc.save('AquaHarvest-Report.pdf');
 
-                        const imageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/240px-Emblem_of_India.svg.png';
-                        const response = await fetch(imageUrl);
-                        const blob = await response.blob();
-                        const reader = new FileReader();
-                        reader.readAsDataURL(blob);
-                        reader.onloadend = function() {
-                            const base64data = reader.result;
-                            const page_width = doc.internal.pageSize.getWidth();
-                            const margin = 15;
-                            let y = 0;
-
-                            // ---- PDF HEADER ----
-                            doc.addImage(base64data, 'PNG', margin, 10, 15, 18);
-                            doc.setFont('helvetica', 'bold');
-                            doc.setFontSize(12);
-                            doc.setTextColor('#000080'); // Dark Blue
-                            doc.text(T['govt-name-text'], page_width / 2, 12, { align: 'center' });
-                            doc.setFontSize(10);
-                            doc.setTextColor('#333333');
-                            doc.text(T['ministry-name-text'], page_width / 2, 18, { align: 'center' });
-                            doc.text(T['header-subtitle'], page_width / 2, 23, { align: 'center' });
-
-                            doc.setDrawColor(0, 0, 128);
-                            doc.setLineWidth(0.5);
-                            doc.line(margin, 30, page_width - margin, 30);
-
-                            // ---- PDF TITLE ----
-                            y = 40;
-                            doc.setFont('helvetica', 'bold');
-                            doc.setFontSize(16);
-                            doc.setTextColor('#1e3a8a');
-                            doc.text('Rainwater Harvesting Potential Report', page_width / 2, y, { align: 'center' });
-                            y += 10;
-                            
-                            // ---- REPORT METADATA ----
-                            doc.setFont('helvetica', 'normal');
-                            doc.setFontSize(9);
-                            doc.setTextColor('#666');
-                            const today = new Date();
-                            doc.text(`Report Generated On: ${today.toLocaleDateString('en-GB')}`, margin, y);
-                            doc.text(`Location: ${inputs.district}, ${inputs.state}`, page_width - margin, y, { align: 'right' });
-                            y += 10;
-
-                            // ---- SECTION HELPER ----
-                            function addSection(title, yPos) {
-                                doc.setFillColor(236, 242, 255);
-                                doc.rect(margin, yPos - 4, page_width - (margin * 2), 9, 'F');
-                                doc.setFont('helvetica', 'bold');
-                                doc.setFontSize(12);
-                                doc.setTextColor('#0c4a6e');
-                                doc.text(title, margin + 2, yPos + 2);
-                                return yPos + 12;
-                            }
-                            function addRow(label, value, yPos, valueColor = '#333333'){
-                                doc.setFont('helvetica', 'bold');
-                                doc.setFontSize(10);
-                                doc.setTextColor('#333333');
-                                doc.text(label, margin + 2, yPos);
-                                doc.setFont('helvetica', 'normal');
-                                doc.setTextColor(valueColor);
-                                doc.text(value, 80, yPos, {maxWidth: 100});
-                                return yPos + (doc.getTextDimensions(value, {maxWidth: 100}).h > 6 ? 12: 7);
-                            }
-
-                            // ---- REPORT CONTENT ----
-                            y = addSection('Key Assessment Results', y);
-                            y = addRow(T['feasibility-title'], T[feasibility.ratingKey], y, feasibility.color === 'green' ? '#16a34a' : (feasibility.color === 'yellow' ? '#f59e0b' : '#ef4444'));
-                            y = addRow(T['harvest-title'], `${annualHarvest.toLocaleString('en-IN')} ${T['harvest-unit']}`, y, '#2563eb');
-                            let impactText = format(T['impact-text'], { residents: inputs.residents, days: daysCovered }).replace(/<[^>]*>?/gm, '');
-                            y = addRow(T['impact-title'], impactText, y);
-                            y+= 5;
-                            
-                            y = addSection('Technical Recommendations', y);
-                            y = addRow(T['structure-title'], T[recommendation.nameKey], y);
-                            y = addRow('Description', T[recommendation.descKey], y);
-                            y = addRow(T['dimensions-title'], T[recommendation.dimensions.text] || recommendation.dimensions.text, y);
-                            y+= 5;
-
-                            y = addSection('Financial Analysis', y);
-                            y = addRow('Estimated Project Cost:', `Rs. ${recommendation.cost.toLocaleString('en-IN')}`, y);
-                            y = addRow('Estimated Annual Savings:', `Rs. ${recommendation.annualSavings.toLocaleString('en-IN')}`, y, '#16a34a');
-                            y+= 5;
-                            
-                            y = addSection('Input Data Used', y);
-                            y = addRow('Rooftop Area:', `${inputs.rooftopArea} m²`, y);
-                            y = addRow('Roof Type:', `${inputs.roofTypeText} (Coeff: ${inputs.runoffCoefficient})`, y);
-                            y = addRow(T['data-rainfall'], `${data.rainfall} mm`, y);
-                            y = addRow(T['data-depth'], `~${data.groundwaterDepth} m`, y);
-                            y = addRow(T['data-aquifer'], `${data.aquifer}`, y);
-                            
-                            // ---- PDF FOOTER ----
-                            const pageCount = doc.internal.getNumberOfPages();
-                            for (let i = 1; i <= pageCount; i++) {
-                                doc.setPage(i);
-                                doc.setFontSize(8);
-                                doc.setTextColor(150);
-                                doc.text('Page ' + String(i) + ' of ' + String(pageCount), page_width - margin, 285, { align: 'right' });
-                                doc.text('Generated by AquaHarvest Portal | Ministry of Jal Shakti', margin, 285);
-                                doc.setDrawColor(0, 0, 128);
-                                doc.line(margin, 280, page_width - margin, 280);
-                            }
-                            
-                            doc.save('AquaHarvest-Report.pdf');
-                            btn.innerHTML = originalHTML;
-                            btn.disabled = false;
-                        };
                     } catch (error) {
                         console.error("PDF Generation Failed:", error);
                         App.ui.showNotification("Could not generate PDF. Please try again.");
+                    } finally {
                         btn.innerHTML = originalHTML;
                         btn.disabled = false;
                     }
@@ -795,12 +777,12 @@
                     mapOptionBtn: 'map-option-btn', placeholder: 'placeholder', loader: 'loader',
                     loaderText: 'loader-text', resultsContainer: 'results', detectLocationBtn: 'detect-location-btn',
                     langDropdownBtn: 'lang-dropdown-btn', langDropdownMenu: 'lang-dropdown-menu',
-                    langBtnText: 'lang-btn-text', // Added this
+                    langBtnText: 'lang-btn-text',
                     loadingOverlay: 'loading-overlay',
                     rooftypeSelect: 'rooftype-select', residentsInput: 'residents', openSpaceInput: 'open-space',
                     notification: 'notification', notificationMessage: 'notification-message',
                     steps: document.querySelectorAll('.step-content'),
-                    nextBtn1: 'next-btn-1', prevBtn2: 'prev-btn-2', nextBtn2: 'next-btn-2', prevBtn3: 'prev-btn-3',
+                    nextBtn1: 'next-btn-1', prevBtn2: 'prev-btn-2', nextBtn2: 'next-btn-2', prevBtn3: 'prev-btn-3'
                 };
                 for (const key in elementIdMap) {
                      if (typeof elementIdMap[key] === 'string') this.elements[key] = document.getElementById(elementIdMap[key]);

@@ -1,19 +1,24 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 import json
 import joblib
 import pandas as pd
 import os
+from datetime import datetime
+import pytz
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 # Initialize the FastAPI app
 app = FastAPI()
 
 # --- CORS Middleware ---
 origins = [
-    "http://127.0.0.1:5500",  # For VS Code Live Server
-    "http://localhost:5500",   # For local testing
-    "https://aquaharvestbyrapidinnovators.netlify.app"    # IMPORTANT: Paste your Netlify site URL here
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+    "https://aquaharvestbyrapidinnovators.netlify.app" # Your Netlify URL
 ]
 
 app.add_middleware(
@@ -24,20 +29,58 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- Data Loading ---
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_DATA_PATH = os.path.join(SCRIPT_DIR, '..', 'data.json')
-MODEL_PATH = os.path.join(SCRIPT_DIR, 'rwh_model.joblib')
-ENCODERS_PATH = os.path.join(SCRIPT_DIR, 'encoders.joblib')
-
-
+# --- Data Loading & Firebase Initialization ---
 db_data = {}
 model = None
 encoders = None
+db_firestore = None
+
+@app.on_event("startup")
+def load_resources():
+    global db_data, model, encoders, db_firestore
+    print("--- Server is starting up... ---")
+    
+    # Load local data files
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    DB_DATA_PATH = os.path.join(SCRIPT_DIR, '..', 'data.json')
+    MODEL_PATH = os.path.join(SCRIPT_DIR, 'rwh_model.joblib')
+    ENCODERS_PATH = os.path.join(SCRIPT_DIR, 'encoders.joblib')
+
+    try:
+        with open(DB_DATA_PATH, 'r') as f:
+            db_data = json.load(f)
+        print(f"✅ Database loaded successfully")
+    except Exception as e:
+        print(f"❌ CRITICAL ERROR: Could not load database file. {e}")
+    
+    try:
+        if os.path.exists(MODEL_PATH) and os.path.exists(ENCODERS_PATH):
+            model = joblib.load(MODEL_PATH)
+            encoders = joblib.load(ENCODERS_PATH)
+            print(f"✅ AI Model and Encoders loaded successfully.")
+        else:
+            print(f"⚠️ WARNING: AI Model or encoders not found.")
+    except Exception as e:
+        print(f"❌ CRITICAL ERROR: Could not load AI model. {e}")
+
+    # Initialize Firebase Admin SDK
+    try:
+        cred_json_str = os.environ.get('FIREBASE_CREDENTIALS')
+        if cred_json_str:
+            cred_json = json.loads(cred_json_str)
+            cred = credentials.Certificate(cred_json)
+            firebase_admin.initialize_app(cred)
+            db_firestore = firestore.client()
+            print("✅ Firebase Admin SDK initialized successfully.")
+        else:
+            print("⚠️ FIREBASE WARNING: `FIREBASE_CREDENTIALS` env variable not set. Firestore logging is disabled.")
+    except Exception as e:
+        print(f"❌ FIREBASE ERROR: Could not initialize Firebase Admin SDK. {e}")
+
+    print("--- Startup complete. Server is ready. ---")
 
 # Helper function
 def clean_structure_type(st):
-    """Standardizes the structure type string."""
     st = str(st).lower()
     if 'percolation' in st: return 'Percolation Tank'
     if 'check dam' in st: return 'Check Dam'
@@ -50,28 +93,6 @@ def clean_structure_type(st):
     if 'gully' in st: return 'Gully Plug'
     return 'Other'
 
-@app.on_event("startup")
-def load_resources():
-    global db_data, model, encoders
-    print("--- Server is starting up... ---")
-    try:
-        with open(DB_DATA_PATH, 'r') as f:
-            db_data = json.load(f)
-        print(f"✅ Database loaded successfully from '{DB_DATA_PATH}'")
-    except Exception as e:
-        print(f"❌ CRITICAL ERROR: Could not load database file. {e}")
-    
-    try:
-        if os.path.exists(MODEL_PATH) and os.path.exists(ENCODERS_PATH):
-            model = joblib.load(MODEL_PATH)
-            encoders = joblib.load(ENCODERS_PATH)
-            print(f"✅ AI Model and Encoders loaded successfully.")
-        else:
-            print(f"⚠️ WARNING: AI Model or encoders not found. Prediction feature will be disabled.")
-    except Exception as e:
-        print(f"❌ CRITICAL ERROR: Could not load AI model. {e}")
-    print("--- Startup complete. Server is ready. ---")
-
 # --- Pydantic Models ---
 class AnalysisInput(BaseModel):
     state: str
@@ -81,11 +102,12 @@ class AnalysisInput(BaseModel):
     roofTypeText: str
     residents: int
     openSpace: float
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 def get_structure_recommendation(data, open_space, structure_dimensions):
     geology = data.get('geology', 'unknown').lower()
     pit_area = structure_dimensions.get("pitDimensions", {}).get("area", 5)
-
     if 'hard-rock' in geology or 'crystalline' in geology:
         if open_space > 500: return {"nameKey": "structure-percolation-tank", "descKey": "structure-percolation-tank-desc", "icon": "pit"}
         elif open_space > 20: return {"nameKey": "structure-recharge-pit", "descKey": "structure-recharge-pit-desc", "icon": "pit"}
@@ -110,13 +132,9 @@ def calculate_dimensions(annual_harvest):
     }
 
 def get_ai_prediction(input_data: AnalysisInput, district_data: dict, recommendation: dict):
-    if model is None or encoders is None:
-        return 0
-
+    if model is None or encoders is None: return 0
     try:
         structure_cleaned = clean_structure_type(recommendation['nameKey'])
-        
-        # Create DataFrame with all features the new model expects
         input_df = pd.DataFrame([{
             'location.latitude': district_data['coords'][0],
             'location.longitude': district_data['coords'][1],
@@ -125,21 +143,16 @@ def get_ai_prediction(input_data: AnalysisInput, district_data: dict, recommenda
             'rainfall': district_data.get('rainfall', 0),
             'groundwaterDepth': district_data.get('groundwaterDepth', 0)
         }])
-        
-        # Encode categorical features
         label_encoders = {k: v for k, v in encoders.items() if k != 'outcome'}
         for col, encoder in label_encoders.items():
             if col in input_df.columns:
                 known_classes = set(encoder.classes_)
                 input_df[col] = input_df[col].apply(lambda x: x if x in known_classes else encoder.classes_[0])
                 input_df[col] = encoder.transform(input_df[col])
-        
         probability = model.predict_proba(input_df)
-        
         outcome_encoder = encoders['outcome']
         success_class_index = list(outcome_encoder.classes_).index('success')
         success_probability = probability[0][success_class_index]
-        
         return int(success_probability * 100)
     except Exception as e:
         print(f"Error during AI prediction: {e}")
@@ -148,6 +161,36 @@ def get_ai_prediction(input_data: AnalysisInput, district_data: dict, recommenda
 # --- API Endpoint ---
 @app.post("/analyze")
 def analyze_data(inputs: AnalysisInput):
+    IST = pytz.timezone('Asia/Kolkata')
+    now_in_ist = datetime.now(IST)
+    timestamp_str = now_in_ist.strftime('%d-%m-%Y %H:%M:%S')
+
+    # Log to Render Console
+    print("=========================================")
+    print(f"💧 New Analysis Request at: {timestamp_str} (IST)")
+    print(f"   Location: {inputs.district}, {inputs.state}")
+    print(f"   Area: {inputs.rooftopArea} m², Residents: {inputs.residents}, Open Space: {inputs.openSpace} m²")
+    if inputs.latitude and inputs.longitude:
+        print(f"   Coordinates: Lat {inputs.latitude:.4f}, Lon {inputs.longitude:.4f}")
+    print("=========================================")
+    
+    # Save to Firebase Firestore
+    if db_firestore:
+        try:
+            doc_ref = db_firestore.collection('analysis_requests').document()
+            doc_ref.set({
+                'state': inputs.state,
+                'district': inputs.district,
+                'rooftopArea': inputs.rooftopArea,
+                'residents': inputs.residents,
+                'latitude': inputs.latitude,
+                'longitude': inputs.longitude,
+                'timestamp': now_in_ist
+            })
+        except Exception as e:
+            print(f"🔥 FIREBASE SAVE FAILED: {e}")
+
+    # Main analysis logic
     district_data = db_data.get(inputs.state, {}).get(inputs.district)
     if not district_data:
         raise HTTPException(status_code=404, detail="District data not found")
