@@ -159,6 +159,11 @@ def get_ai_prediction(input_data: AnalysisInput, district_data: dict, recommenda
         return 0
 
 # --- API Endpoint ---
+# Health check endpoint for uptime monitoring
+@app.get('/health')
+def health_check():
+    return {"status": "healthy"}
+    
 @app.post("/analyze")
 def analyze_data(inputs: AnalysisInput):
     IST = pytz.timezone('Asia/Kolkata')
