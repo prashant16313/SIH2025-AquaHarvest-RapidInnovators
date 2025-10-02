@@ -158,14 +158,7 @@ def get_ai_prediction(input_data: AnalysisInput, district_data: dict, recommenda
         print(f"Error during AI prediction: {e}")
         return 0
 
-# --- API Endpoints ---
-
-# Health check endpoint for UptimeRobot
-@app.get('/health')
-def health_check():
-    """A simple endpoint to confirm the server is running for uptime monitoring."""
-    return {"status": "healthy"}
-
+# --- API Endpoint ---
 @app.post("/analyze")
 def analyze_data(inputs: AnalysisInput):
     IST = pytz.timezone('Asia/Kolkata')
@@ -249,3 +242,4 @@ def analyze_data(inputs: AnalysisInput):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
